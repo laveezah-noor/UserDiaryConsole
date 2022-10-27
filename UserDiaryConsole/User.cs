@@ -22,7 +22,7 @@ namespace UserDiaryConsole
 
     public abstract class User
     {
-        static int count = View.defaultEmpList.users.Count + View.defaultAdminList.users.Count;
+        static int count = Cache.UserList.id;
         
         public int Id;
         public string Name { get; set; }
@@ -37,6 +37,7 @@ namespace UserDiaryConsole
         {
             count++;
             this.Id = count;
+            Cache.UserList.id = count;
             //Console.WriteLine("Count: "+count);
         }
         public void create
@@ -65,7 +66,7 @@ namespace UserDiaryConsole
                 UpdateUserList();
                 return true;
             }
-            Console.WriteLine("Incorrect");
+            //Console.WriteLine("Incorrect");
             return false;
         }
         public void Logout()
@@ -74,7 +75,7 @@ namespace UserDiaryConsole
             UpdateUserList();
             Console.WriteLine("Logged Out");
         }
-        public void UpdateUser(int userId, string Name, string Password, string Phone, string Email)
+        public void UpdateUser(string Name, string Password, string Phone, string Email)
         {
             for (int i = 0; i < 4; i++)
             {
@@ -87,47 +88,45 @@ namespace UserDiaryConsole
                         this.UpdateName(Name);
                         Name = "";
                         Console.WriteLine(Name);
-                        this.display();
                     }
                     else if (Password != "")
                     {
                         this.UpdatePassword(Password);
                         Password = "";
                         Console.WriteLine(Password);
-                        this.display();
                     }
                     else if (Phone != "")
                     {
                         this.UpdatePhone(Phone);
                         Phone = "";
                         Console.WriteLine(Phone);
-                        this.display();
                     }
                     else if (Email != "")
                     {
                         this.UpdateEmail(Email);
                         Email = "";
                         Console.WriteLine(Email);
-                        this.display();
                     }
                 }
             }
+            this.display();
+
         }
-        public void UpdateName(string input)
+        void UpdateName(string input)
         {
             if (input != null && this.LogStatus != false)
             {
                 this.Name = input;
             }
         }
-        public void UpdatePassword(string input)
+        void UpdatePassword(string input)
         {
             if (input != null && this.LogStatus != false)
             {
                 this.Password = input;
             }
         }
-        public void UpdateStatus(string input)
+        void UpdateStatus(string input)
         {
             if (input != null && this.LogStatus)
             {
@@ -161,7 +160,7 @@ namespace UserDiaryConsole
         //To update the XML UserList
         public void UpdateUserList()
         {
-            Xml<defaultUserList>.Serialize(View.UserList);
+            Xml<defaultUserList>.Serialize(Cache.UserList);
         }
     }
 

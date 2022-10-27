@@ -30,21 +30,21 @@ namespace UserDiaryConsole
             this.userDiaries = new Diary_List(this.Id);
         }
 
-        public User Register(
+        public static void Register(
              string Name,
              string Password,
              string phone,
              string email
              )
         {
-            this.user = new EmployeeUser();
-            this.user.create(Name, Password, Types.user.ToString(), Statuses.pending.ToString());
-            this.user.UpdateEmail(email);
-            this.user.UpdatePhone(phone);
-            AdminUser.defaultEmpList.addUser(this.user);
-            UpdateUserList();
-            this.user.display();
-            return this.user;
+            EmployeeUser user = new EmployeeUser();
+            user.create(Name, Password, Types.user.ToString(), Statuses.pending.ToString());
+            user.UpdateEmail(email);
+            user.UpdatePhone(phone);
+            AdminUser.defaultEmpList.addUser(user);
+            user.UpdateUserList();
+            user.display();
+            //return this.user;
         }
         public void CreateDiary(string name, string content)
         {

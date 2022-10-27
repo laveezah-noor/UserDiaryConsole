@@ -22,7 +22,7 @@ namespace UserDiaryConsole
                 writer.Close();
             }
             //     serializer.Serialize(Console.Out, Item);
-            Console.WriteLine("Serialization Done");
+            Console.WriteLine("\nXml Updated\n");
         }
         public static T Deserialize(T Item)
         {

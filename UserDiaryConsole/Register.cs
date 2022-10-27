@@ -9,23 +9,23 @@ namespace UserDiaryConsole
 
     class Register
     {
-        public static User AdminRegister(
+        public static void AdminRegister(
             string Name,
             string Password,
             string phone,
             string email
             )
         {
-            return new AdminUser().Register(Name, Password, phone, email);
+            AdminUser.Register(Name, Password, phone, email);
         }
-        public static User EmployeeRegister(
+        public static void EmployeeRegister(
             string Name,
             string Password,
             string phone,
             string email
             )
         {
-            return new EmployeeUser().Register(Name, Password, phone, email);
+            EmployeeUser.Register(Name, Password, phone, email);
         }
     }
 

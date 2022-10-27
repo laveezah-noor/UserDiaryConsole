@@ -1,99 +1,376 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
+/// <summary>
+/// Summary description for View
+/// Console Interface of the Diaries
+/// </summary>
 namespace UserDiaryConsole
 {
     public class View
     {
-        public static List<Diary_List> defaultDiaryList = new List<Diary_List>();
-        public static defaultUserList UserList = new defaultUserList();
-        public static User_List<AdminUser> defaultAdminList = UserList.Admin_UserList;
-        public static User_List<EmployeeUser> defaultEmpList = UserList.Employee_UserList;
-        public static AdminUser admin;
-        public static EmployeeUser emp;
+        Cache cache;
+        dynamic user;
         
-        public View()
-        {
-            try
-            {
-                //Console.WriteLine("Boot");
-            View.UserList = GetDefaultUserList();
-            View.defaultEmpList = View.UserList.Employee_UserList;
-            View.defaultAdminList = View.UserList.Admin_UserList;
-            }
-            catch (Exception ex)
-            {
-                Xml<defaultUserList>.Serialize(View.UserList);
+        public View(){
+            Console.WriteLine("===========Welcome to the Diaries===========\n");
+            cache = new Cache();
 
-            }
+            MainInterface();
         }
-        defaultUserList GetDefaultUserList()
+    void MainInterface()
         {
-            return Xml<defaultUserList>.Deserialize(UserList);
-        }
-        public static
-            void DisplayUserLists()
-        {
-            UserList.Admin_UserList.displayUsers();
-            UserList.Employee_UserList.displayUsers();
-
-        }
-        public static
-          // void
-          AdminUser
-            AdminLog(int userId, string password)
-        {
-            AdminLogin user = AdminLogin.getInstance();
-            Console.WriteLine(emp);
-            if (emp == null)
+            do
             {
-                if (AdminLogin.getLoggedIn(userId, password))
+                Console.WriteLine("\nDo you want to Login or Register an Accout?\n"+
+                "- To Login Press 0\n" + "- To Register Press 1\n" + "- To Exit Press 2\n");
+            int opt = Convert.ToInt32(Console.ReadLine());
+            if (opt == 0) {
+                    LoginInterface();
+            }
+            else if (opt == 1)
+            {
+                    RegisterInterface();
+            }
+            else if (opt == 2)
+            {
+                    break;
+            }
+            else { Console.WriteLine("Wrong Input!"); }
+            } while (user is null);
+        }
+    void RegisterInterface() {
+        Console.WriteLine("=========== Register ===========\n");
+            bool temp = true;
+            do {
+            Console.WriteLine("\nDo you want to Create Account as Admin or User?\n"+
+                "- To Register as Admin Press 0\n" + "- To Register as User Press 1\n" + "- To Exit Press 2\n");
+            int opt = Convert.ToInt32(Console.ReadLine());
+            if (opt == 0) {
+                Console.WriteLine("===Admin Register===");
+                Console.WriteLine("Enter Name:");
+                string name = Console.ReadLine();
+                Console.WriteLine("Enter Password: ");
+                string passcode = Console.ReadLine();
+                Console.WriteLine("Enter Phone Number: ");
+                string phone = Console.ReadLine();
+                Console.WriteLine("Enter Email Address: ");
+                string email = Console.ReadLine();
+                
+                Register.AdminRegister(name, passcode, phone, email);
+                break;
+            }
+            else if (opt == 1)
+            {
+                Console.WriteLine("===User Register===\n");
+                Console.WriteLine("Enter Name:");
+                string name = Console.ReadLine();
+                Console.WriteLine("Enter Password: ");
+                string passcode = Console.ReadLine();
+                Console.WriteLine("Enter Phone Number: ");
+                string phone = Console.ReadLine();
+                Console.WriteLine("Enter Email Address: ");
+                string email = Console.ReadLine();
+                
+                Register.EmployeeRegister(name, passcode, phone, email);
+                break;
+            }
+            else if (opt == 2)
+            {
+                    break;
+            }
+            else { Console.WriteLine("Wrong Input!"); }
+            } while (temp);
+        }
+    void LoginInterface()
+        {
+            Console.WriteLine("=========== Login ===========\n");
+            do {
+            Console.WriteLine("\nDo you want to login as Admin or User?\n"+
+                "- To Login as Admin Press 0\n" + "- To Login as User Press 1\n" + "- To Exit Press 2\n");
+            int opt = Convert.ToInt32(Console.ReadLine());
+            if (opt == 0) {
+                Console.WriteLine("===Admin Login===");
+                RunAdminLogin(user);
+            }
+            else if (opt == 1)
+            {
+                Console.WriteLine("===User Login===");
+                RunUserLogin(user);
+            }
+            else if (opt == 2)
+            {
+                    break;
+            }
+            else { Console.WriteLine("Wrong Input!"); }
+            } while (user is null);
+        }
+    void RunUserLogin(EmployeeUser user)
+        {
+            do
+	            {
+                Console.WriteLine("Enter your UserId: ");
+                int id;
+                try
                 {
-                    admin = AdminLogin.currentUser;
-                    return admin;
+                    id = Convert.ToInt32(Console.ReadLine());
                 }
-                return null;
-            }
-            Console.WriteLine("Already Logged In As User");
-            return null;
-
-        }
-        public static EmployeeUser UserLog(int userId, string password)
-        {
-            UserLogin user = UserLogin.getInstance();
-            if (admin == null)
-            {
-                if (UserLogin.getLoggedIn(userId, password))
+                catch
                 {
-                    emp = UserLogin.currentUser;
-                    return emp;
-                }
-                return null;
-            }
-            Console.WriteLine("Already Logged In As Admin");
-            return null;
+                    Console.WriteLine("UserId is not Number!\n Try it again");
+                    id = Convert.ToInt32(Console.ReadLine());
+                } 
+                Console.WriteLine("Enter your Password: ");
+                string password = Console.ReadLine();
+
+                user = cache.UserLog(id, password);
+
+	            } while (user is null);
+                RunUserFunctions(user);
         }
-        public static void Logout()
+    void RunAdminLogin(AdminUser user)
         {
-            UserLogin user = UserLogin.getInstance();
-            if(emp != null)
-            {
-                admin = null;
-                emp = null;
-                UserLogin.getLoggedOut();
-            }
-            else if (admin != null)
-            {
-                emp = null;
-                admin = null;   
-             AdminLogin.getLoggedOut();
+            do
+	            {
+                Console.WriteLine("Enter your UserId: ");
+                int id;
+                try
+                {
+                    id = Convert.ToInt32(Console.ReadLine());
+                }
+                catch
+                {
+                    Console.WriteLine("UserId is not Number!\n Try it again");
+                    id = Convert.ToInt32(Console.ReadLine());
+                } 
+                Console.WriteLine("Enter your Password: ");
+                string password = Console.ReadLine();
 
-            }
+                user = cache.AdminLog(id, password);
 
+	            } while (user is null);
+                RunAdminFunctions(user);
+        }
+    void RunUserFunctions(EmployeeUser user)
+        {
+        outer: while (user is not null) {
+                    Console.WriteLine("What do you want to do?");
+                    Console.WriteLine(
+                        "- To Create a Diary Press 0\n"+
+                        "- To Update a Diary Press 1\n" + 
+                        "- To Find a Diary Press 2\n" +
+                        "- To Delete a Diary Press 3\n" +
+                        "- To Display Diaries Press 4\n" +
+                        "- To Update your Profile Press 5\n" +
+                        "- To Logout Press 6\n");
+                    int input = Convert.ToInt32(Console.ReadLine());
+                    switch (input)
+	                {
+                        case 0:
+                        {
+
+                            Console.WriteLine("==== To Create a Diary ====\n"+
+                            "Enter Name of the Diary:");
+                            string name = Console.ReadLine();
+                            Console.WriteLine("Enter Content: ");
+                            string content = Console.ReadLine();
+                            user.CreateDiary(name, content);
+                            break;
+                        }
+                        case 1:
+                        {
+                            Console.WriteLine("==== To Update a Diary ====\n"+
+                            "Enter Diary Id:");
+                            int id = Convert.ToInt32(Console.ReadLine());
+                            Console.WriteLine("Enter Name of the Diary:");
+                            string name = Console.ReadLine();
+                            Console.WriteLine("Enter Content: ");
+                            string content = Console.ReadLine();
+                            user.UpdateDiary(id, name, content);
+                            break;
+                        }
+                        case 2:
+                        {
+                            Console.WriteLine("==== To Find a Diary ====\n"+
+                            "Enter Diary Id:");
+                            int id = Convert.ToInt32(Console.ReadLine());
+                            user.FindDiary(id);
+                            break;
+                        }
+                        case 3:
+                        { 
+                            Console.WriteLine("==== To Delete a Diary ====\n"+
+                            "Enter Diary Id:");
+                            int id = Convert.ToInt32(Console.ReadLine());
+                            user.DeleteDiary(id);
+                            break;
+                        }
+                        case 4:
+                        { 
+                            Console.WriteLine("==== Diaries Displayed ====\n");
+                            user.DisplayDiaries();
+                            break;
+                        }
+                        case 5:
+                        { 
+                            Console.WriteLine("==== To Update your Profile ====\n");
+                            user.display();
+                            Console.WriteLine("Enter Name if you want to change:");
+                            string name = Console.ReadLine();
+                            Console.WriteLine("Enter Password if you want to change:");
+                            string passcode = Console.ReadLine();
+                            Console.WriteLine("Enter Phone Number if you want to change:");
+                            string phone = Console.ReadLine();
+                            Console.WriteLine("Enter Email if you want to change:");
+                            string email = Console.ReadLine();
+
+                            user.UpdateUser(name, passcode, phone, email);
+                            break;
+                        }
+                        case 6:
+                            Console.WriteLine("==== Do you really want to logout? ====\n"+"If Yes press y, Else press n");
+                            string response = Console.ReadLine();
+                            if (response == "y")
+                            {
+                                cache.Logout();
+                            user = null;
+                            }
+                                break;
+		                default:
+                            break;}
+	                    
+                    
         }
     }
+    void RunAdminFunctions(AdminUser user)
+        {
+        outer: while (user is not null) {
+                    Console.WriteLine("What do you want to do as Admin?");
+                    Console.WriteLine(
+                        "- To Create a User Press 0\n"+
+                        "- To Delete a User Press 1\n" + 
+                        "- To Find a User Press 2\n" +
+                        "- To Authorize a User Press 3\n" +
+                        "- To UnAuthorize a User Press 4\n" +
+                        "- To Find User Diary Press 5\n" +
+                        "- To Delete an Admin Press 6\n" + 
+                        "- To Display Users Press 7\n" +
+                        "- To Display Admins Press 8\n" +
+                        "- To Display User Diaries Press 9\n" +
+                        "- To Update your Profile Press 10\n" +
+                        "- To Logout Press 11\n");
+                    int input = Convert.ToInt32(Console.ReadLine());
+                    switch (input)
+	                {
+                        case 0:
+                        {
 
+                            Console.WriteLine("==== To Create a User ====\n"+
+                            "Enter User Name:");
+                            string name = Console.ReadLine();
+                            Console.WriteLine("Enter User Password: ");
+                            string passcode = Console.ReadLine();
+                            user.CreateUser(name, passcode);
+                            break;
+                        }
+                        case 1:
+                        {
+                            Console.WriteLine("==== To Delete a User ====\n"+
+                            "Enter User Id:");
+                            int id = Convert.ToInt32(Console.ReadLine());
+                            user.DeleteUser(id);
+                            break;
+                        }
+                        case 2:
+                        {
+
+                            Console.WriteLine("==== To Find a User ====\n"+
+                            "Enter User Id:");
+                            int id = Convert.ToInt32(Console.ReadLine());
+                            user.FindUser(id);
+                            break;
+                        }
+                        case 3:
+                        { 
+                            Console.WriteLine("==== To Authorize a User ====\n"+
+                            "Enter User Id:");
+                            int id = Convert.ToInt32(Console.ReadLine());
+                            user.AuthorizeUser(id);
+                            break;
+                        }
+                        case 4:
+                        { 
+                            Console.WriteLine("==== To Unauthorize a User ====\n"+
+                            "Enter User Id:");
+                            int id = Convert.ToInt32(Console.ReadLine());
+                            user.DeleteDiaryList(id);
+                            break;
+                        }
+                        case 5:
+                        { 
+                            Console.WriteLine("==== To Find a User Diary ====\n"+
+                            "Enter User Id:");
+                            int id = Convert.ToInt32(Console.ReadLine());
+                            user.FindDiaryList(id);
+                            break;
+                        }
+                        case 6:
+                        {
+                            Console.WriteLine("==== To Delete an Admin ====\n"+
+                            "Enter Admin Id:");
+                            int id = Convert.ToInt32(Console.ReadLine());
+                            user.DeleteAdmin(id);
+                            break;
+                        }
+                        case 7:
+                        {
+                            Console.WriteLine("==== Users Displayed ====\n");
+                            user.DisplayUserLists();
+                            break;
+                        }
+                        case 8:
+                        { 
+                            Console.WriteLine("==== Admins Displayed ====\n");
+                            user.DisplayAdminLists();
+                            break;
+                        }
+                        case 9:
+                        { 
+                            Console.WriteLine("==== User Diaries Displayed ====");
+                            user.DisplayDiaryLists();
+                            break;
+                        }
+                        case 10:
+                        { 
+                            Console.WriteLine("==== To Update your Profile ====\n");
+                            user.display();
+                            Console.WriteLine("Enter Name if you want to change:");
+                            string name = Console.ReadLine();
+                            Console.WriteLine("Enter Password if you want to change:");
+                            string passcode = Console.ReadLine();
+                            Console.WriteLine("Enter Phone Number if you want to change:");
+                            string phone = Console.ReadLine();
+                            Console.WriteLine("Enter Email if you want to change:");
+                            string email = Console.ReadLine();
+
+                            user.UpdateUser(name, passcode, phone, email);
+                            break;
+                        }
+                        case 11:
+                            Console.WriteLine("==== Do you really want to logout? ====\n"+"If Yes press y, Else press n");
+                            string response = Console.ReadLine();
+                            if (response == "y")
+                            {
+                                cache.Logout();
+                                user = null;
+                                
+                            }
+                                break;
+		                default:
+                            break;}
+	                    
+                    
+        }
+    }
 }
+}
+

@@ -12,26 +12,26 @@ namespace UserDiaryConsole
     {
         AdminUser user;
         public static List<Diary_List> defaultDiaryList = new List<Diary_List>();
-        public static User_List<AdminUser> defaultAdminList = View.defaultAdminList;
-        public static User_List<EmployeeUser> defaultEmpList = View.defaultEmpList;
-        public static defaultUserList defaultUserList = View.UserList;
+        public static User_List<AdminUser> defaultAdminList = Cache.defaultAdminList;
+        public static User_List<EmployeeUser> defaultEmpList = Cache.defaultEmpList;
+        public static defaultUserList defaultUserList = Cache.UserList;
 
-        public User Register(
+        public static void Register(
             string Name,
             string Password,
             string phone,
             string email
             )
         {
-            this.user = new AdminUser();
-            this.user.create(Name, Password, Types.admin.ToString(), Statuses.active.ToString());
-            this.user.UpdateEmail(email);
-            this.user.UpdatePhone(phone);
-            View.defaultAdminList.addUser(this.user);
+            AdminUser user = new AdminUser();
+            user.create(Name, Password, Types.admin.ToString(), Statuses.active.ToString());
+            user.UpdateEmail(email);
+            user.UpdatePhone(phone);
+            Cache.defaultAdminList.addUser(user);
             //DisplayUserLists();
-            UpdateUserList();
-            this.user.display();
-            return this.user;
+            user.UpdateUserList();
+            user.display();
+            //return this.user;
         }
 
         //To add DiaryList of a specific user inside the default diary list
@@ -122,8 +122,16 @@ namespace UserDiaryConsole
             Console.WriteLine("Logged Out");
         }
 
-        //Thinking of removing it, no idea what this will do
-        //public void UpdateUser(EmployeeUser user, bool authorized) { }
+        //To Delete admin from the admin portal
+        public void DeleteAdmin(int userId)
+        {
+            if (this.LogStatus)
+            {
+                defaultAdminList.deleteUser(userId);
+                UpdateUserList();
+            }
+            Console.WriteLine("Logged Out");
+        }
 
         //For Implementing search bars
         public void FindUser(int userId)
@@ -137,17 +145,19 @@ namespace UserDiaryConsole
         }
 
         //Authorizes the user to use Diaries
-        public void AuthorizeUser(EmployeeUser user)
+        public void AuthorizeUser(int userId)
         {
             if (this.LogStatus)
             {
-                user.Authorize();
-                CreateDiaryList(user.userDiaries);
+                EmployeeUser emp = defaultEmpList.findUser(userId);
+                emp.display();
+                emp.Authorize();
+                CreateDiaryList(emp.userDiaries);
                 UpdateDiaryList();
 
             }
         }
-        public static
+        public
             void DisplayUserLists()
         {
             //if (LogStatus)
@@ -155,7 +165,14 @@ namespace UserDiaryConsole
             defaultEmpList.displayUsers();
 
         }
+        public
+            void DisplayAdminLists()
+        {
+            //if (LogStatus)
 
+            defaultAdminList.displayUsers();
+
+        }
     }
 
 }
