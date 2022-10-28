@@ -25,10 +25,6 @@ namespace UserDiaryConsole
                 this.userDiaries = new Diary_List(this.Id);
             }
         }
-        public void Authorize()
-        {
-            this.userDiaries = new Diary_List(this.Id);
-        }
 
         public static void Register(
              string Name,
@@ -51,14 +47,14 @@ namespace UserDiaryConsole
             if (this.LogStatus)
             {
                 //console.writeline(name, content);
-                if (this.userDiaries is not null)
+                if (this.userDiaries is not null && this.Status == Statuses.active.ToString())
                 {
                     this.userDiaries.addDiary(name, content);
                     UpdateDiaryList();
                 }
                 else
                 {
-                    Console.WriteLine($"No diary space for {this.Name} contact your admin");
+                    Console.WriteLine($"\nNo diary space for {this.Name} contact your admin\n");
                     
                 }
 
@@ -90,8 +86,7 @@ namespace UserDiaryConsole
             if (this.LogStatus)
             {
                 this.userDiaries.FindDiary(diaryID);
-            }
-            Console.WriteLine("Logged out");
+            } else Console.WriteLine("Logged out");
         }
         public void DisplayDiaries()
         {

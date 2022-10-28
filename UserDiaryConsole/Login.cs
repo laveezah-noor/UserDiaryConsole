@@ -6,56 +6,59 @@ using System.Threading.Tasks;
 
 namespace UserDiaryConsole
 {
-    public class UserLogin<T>
+    public class UserLogin
     {
-        static UserLogin<T> instance = new UserLogin<T>();
-        public static T currentUser;
-        private UserLogin() { }
+        static UserLogin instance = new UserLogin();
+        public static dynamic currentUser;
+        public UserLogin() { }
         public static void getLoggedOut(dynamic user)
         {
             user.Logout();
             instance = null;
-            currentUser = default(T);
+            currentUser = null;
         }
         public static bool getLoggedIn(int userId, string password)
         {
 
-            if (instance != null)
+            if (currentUser == null)
             {
-                if(instance is UserLogin<EmployeeUser>)
-                {
-                    //Console.WriteLine("Employee");
-                    EmployeeUser user = Cache.UserList.Employee_UserList.findUser(userId);
-                if (user is not null &&
-                        user.Login(userId, password))
-                {
-                    UserLogin<EmployeeUser>.currentUser = user;
-                    return true;
-                }
-                Console.WriteLine("Incorrect Credentials");
-                }
-                else if(instance is UserLogin<AdminUser>)
-                {
-                    //Console.WriteLine("Admin");
-                    AdminUser user = Cache.UserList.Admin_UserList.findUser(userId);
-                    if (user is not null &&
-                        user.Login(userId, password))
-                {
-                    UserLogin<AdminUser>.currentUser = user;
-                    return true;
-                }
-                Console.WriteLine("Incorrect Credentials");
-
-                }
+                
+                    dynamic user = Cache.UserList.Employee_UserList.findUser(userId);
+                    if (user is not null)
+                    {
+                        if (user.Login(userId, password)) {
+                            UserLogin.currentUser = user;
+                            return true;
+                        }
+                        else
+                        {
+                        Console.WriteLine("\nIncorrect Credentials\n");
+                        return false;
+                        }
+                    user = null;
+                    }
+                    user = Cache.UserList.Admin_UserList.findUser(userId);
+                    if (user is not null)
+                    {
+                        if (user.Login(userId, password)) {
+                           UserLogin.currentUser = user;
+                            return true;
+                        } else
+                        {
+                        Console.WriteLine("\nIncorrect Credentials\n");
+                        return false;
+                        }       
+                    }
+                    
             } else Console.WriteLine("Already Logged In");
             return false;
         }
-        public static UserLogin<T> getInstance()
+        public static UserLogin getInstance()
         {
             if (instance != null)
             {
 
-                instance = new UserLogin<T>();
+                instance = new UserLogin();
 
             };
             return instance;

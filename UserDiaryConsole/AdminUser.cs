@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -11,7 +12,8 @@ namespace UserDiaryConsole
     public class AdminUser : User
     {
         AdminUser user;
-        public static List<Diary_List> defaultDiaryList = new List<Diary_List>();
+        public static List<Diary_List> defaultDiaryList = Cache.defaultDiaryList;
+
         public static User_List<AdminUser> defaultAdminList = Cache.defaultAdminList;
         public static User_List<EmployeeUser> defaultEmpList = Cache.defaultEmpList;
         public static defaultUserList defaultUserList = Cache.UserList;
@@ -48,16 +50,18 @@ namespace UserDiaryConsole
         {
             if (this.LogStatus)
             {
-
+                EmployeeUser emp = FindUser(user);
                 int itemIndex = FindDiaryList(user);
                 if (itemIndex != 0)
                 {
                     defaultDiaryList.RemoveAt(itemIndex);
+                    emp.UpdateStatus(Statuses.pending.ToString());
                 }
             }
             Console.WriteLine("Logged Out");
         }
 
+        // Masla h
         public int FindDiaryList(int user)
         {
             if (this.LogStatus)
@@ -67,11 +71,12 @@ namespace UserDiaryConsole
                     if (item.user == user)
                     {
                         Console.WriteLine("\nItem Found!\n");
-                        item.displayDiaries();
+                        item.diaryCount();
                         return defaultDiaryList.IndexOf(item);
                     }
                 }
                 Console.WriteLine("Not Found!");
+                return 0;
             }
             Console.WriteLine("Logged Out");
             return 0;
@@ -83,15 +88,14 @@ namespace UserDiaryConsole
         {
             if (this.LogStatus)
             {
-                Console.WriteLine("Diary List Count: " + defaultDiaryList.Count + "\n");
+                Console.WriteLine($"\nDiary List Count: {defaultDiaryList.Count} out of {defaultEmpList.users.Count} \n");
                 foreach (var item in defaultDiaryList)
                 {
-                    Console.WriteLine("UserId: " + item.user);
-                    item.displayDiaries();
+                    Console.WriteLine($"UserId: {item.user}, UserDiariesCount: {item.diaryCount()}");
+                    //item.displayDiaries();
                 }
 
-            }
-            Console.WriteLine("Logged Out");
+            } else Console.WriteLine("Logged Out");
         }
 
         //To  Create the users from the admin portal
@@ -134,14 +138,16 @@ namespace UserDiaryConsole
         }
 
         //For Implementing search bars
-        public void FindUser(int userId)
+        public EmployeeUser FindUser(int userId)
         {
             if (this.LogStatus)
             {
                 EmployeeUser emp = defaultEmpList.findUser(userId);
                 emp.display();
+                return emp;
             }
             Console.WriteLine("Logged Out");
+            return null;
         }
 
         //Authorizes the user to use Diaries
@@ -149,14 +155,19 @@ namespace UserDiaryConsole
         {
             if (this.LogStatus)
             {
-                EmployeeUser emp = defaultEmpList.findUser(userId);
-                emp.display();
-                emp.Authorize();
+                EmployeeUser emp = FindUser(userId);
+                if (this.FindDiaryList(userId) is 0) { 
+                emp.userDiaries = new Diary_List(emp.Id);
                 CreateDiaryList(emp.userDiaries);
+                }
+                emp.UpdateStatus(Statuses.active.ToString());
                 UpdateDiaryList();
+                emp.display();
 
             }
         }
+
+        //Have to fix it Admin cannot see the password of the users
         public
             void DisplayUserLists()
         {

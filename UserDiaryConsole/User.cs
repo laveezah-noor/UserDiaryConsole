@@ -16,8 +16,7 @@ namespace UserDiaryConsole
     enum Statuses
     {
         active,
-        pending,
-        deleted
+        pending
     }
 
     public abstract class User
@@ -126,9 +125,9 @@ namespace UserDiaryConsole
                 this.Password = input;
             }
         }
-        void UpdateStatus(string input)
+        public void UpdateStatus(string input)
         {
-            if (input != null && this.LogStatus)
+            if (input != null)
             {
                 this.Status = input;
             }
@@ -143,7 +142,8 @@ namespace UserDiaryConsole
         }
         public void display()
         {
-            Console.WriteLine($"ID: {this.Id}\n" +
+            Console.WriteLine("\n" +
+                        $"ID: {this.Id}\n" +
                         $"Name: {this.Name}\n" +
                         $"Password: {this.Password}\n" +
                         $"Type: {this.Type}\n" +

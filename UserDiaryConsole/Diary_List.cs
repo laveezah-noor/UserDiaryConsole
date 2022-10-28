@@ -87,7 +87,7 @@ namespace UserDiaryConsole
                 Console.WriteLine(this.diaries[i].display(user));
             }
         }
-        int diaryCount()
+        public int diaryCount()
         {
             return this.diaries.Count;
         }

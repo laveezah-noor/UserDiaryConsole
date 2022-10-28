@@ -84,27 +84,28 @@ namespace UserDiaryConsole
     void LoginInterface()
         {
             Console.WriteLine("=========== Login ===========\n");
-            do {
-            Console.WriteLine("\nDo you want to login as Admin or User?\n"+
-                "- To Login as Admin Press 0\n" + "- To Login as User Press 1\n" + "- To Exit Press 2\n");
-            int opt = Convert.ToInt32(Console.ReadLine());
-            if (opt == 0) {
-                Console.WriteLine("===Admin Login===");
-                RunAdminLogin(user);
-            }
-            else if (opt == 1)
-            {
-                Console.WriteLine("===User Login===");
-                RunUserLogin(user);
-            }
-            else if (opt == 2)
-            {
-                    break;
-            }
-            else { Console.WriteLine("Wrong Input!"); }
-            } while (user is null);
+            RunUserLogin(user);
+            //do {
+            //Console.WriteLine("\nDo you want to login as Admin or User?\n"+
+            //    "- To Login as Admin Press 0\n" + "- To Login as User Press 1\n" + "- To Exit Press 2\n");
+            //int opt = Convert.ToInt32(Console.ReadLine());
+            //if (opt == 0) {
+            //    Console.WriteLine("===Admin Login===");
+            //    RunAdminLogin(user);
+            //}
+            //else if (opt == 1)
+            //{
+            //    Console.WriteLine("===User Login===");
+            //    RunUserLogin(user);
+            //}
+            //else if (opt == 2)
+            //{
+            //        break;
+            //}
+            //else { Console.WriteLine("Wrong Input!"); }
+            //} while (user is null);
         }
-    void RunUserLogin(EmployeeUser user)
+    void RunUserLogin(dynamic user)
         {
             do
 	            {
@@ -125,35 +126,42 @@ namespace UserDiaryConsole
                 user = cache.UserLog(id, password);
 
 	            } while (user is null);
+                if (user is EmployeeUser)
+                {
                 RunUserFunctions(user);
-        }
-    void RunAdminLogin(AdminUser user)
-        {
-            do
-	            {
-                Console.WriteLine("Enter your UserId: ");
-                int id;
-                try
-                {
-                    id = Convert.ToInt32(Console.ReadLine());
-                }
-                catch
-                {
-                    Console.WriteLine("UserId is not Number!\n Try it again");
-                    id = Convert.ToInt32(Console.ReadLine());
-                } 
-                Console.WriteLine("Enter your Password: ");
-                string password = Console.ReadLine();
 
-                user = cache.AdminLog(id, password);
-
-	            } while (user is null);
+                } else if (user is AdminUser)
+                {
                 RunAdminFunctions(user);
+                }
         }
+    //void RunAdminLogin(AdminUser user)
+    //    {
+    //        do
+	   //         {
+    //            Console.WriteLine("Enter your UserId: ");
+    //            int id;
+    //            try
+    //            {
+    //                id = Convert.ToInt32(Console.ReadLine());
+    //            }
+    //            catch
+    //            {
+    //                Console.WriteLine("UserId is not Number!\n Try it again");
+    //                id = Convert.ToInt32(Console.ReadLine());
+    //            } 
+    //            Console.WriteLine("Enter your Password: ");
+    //            string password = Console.ReadLine();
+
+    //            user = cache.AdminLog(id, password);
+
+	   //         } while (user is null);
+    //            RunAdminFunctions(user);
+    //    }
     void RunUserFunctions(EmployeeUser user)
         {
         outer: while (user is not null) {
-                    Console.WriteLine("What do you want to do?");
+                    Console.WriteLine("\nWhat do you want to do?");
                     Console.WriteLine(
                         "- To Create a Diary Press 0\n"+
                         "- To Update a Diary Press 1\n" + 
@@ -161,7 +169,8 @@ namespace UserDiaryConsole
                         "- To Delete a Diary Press 3\n" +
                         "- To Display Diaries Press 4\n" +
                         "- To Update your Profile Press 5\n" +
-                        "- To Logout Press 6\n");
+                        "- To Display your Profile Press 6\n" +
+                        "- To Logout Press 7\n");
                     int input = Convert.ToInt32(Console.ReadLine());
                     switch (input)
 	                {
@@ -227,6 +236,10 @@ namespace UserDiaryConsole
                             break;
                         }
                         case 6:
+                            Console.WriteLine("===== Profile Displayed =====");
+                            user.display();
+                            break;
+                        case 7:
                             Console.WriteLine("==== Do you really want to logout? ====\n"+"If Yes press y, Else press n");
                             string response = Console.ReadLine();
                             if (response == "y")
@@ -244,7 +257,7 @@ namespace UserDiaryConsole
     void RunAdminFunctions(AdminUser user)
         {
         outer: while (user is not null) {
-                    Console.WriteLine("What do you want to do as Admin?");
+                    Console.WriteLine("\nWhat do you want to do as Admin?");
                     Console.WriteLine(
                         "- To Create a User Press 0\n"+
                         "- To Delete a User Press 1\n" + 
@@ -257,7 +270,8 @@ namespace UserDiaryConsole
                         "- To Display Admins Press 8\n" +
                         "- To Display User Diaries Press 9\n" +
                         "- To Update your Profile Press 10\n" +
-                        "- To Logout Press 11\n");
+                        "- To Display your Profile Press 11\n" +
+                        "- To Logout Press 12\n");
                     int input = Convert.ToInt32(Console.ReadLine());
                     switch (input)
 	                {
@@ -356,6 +370,10 @@ namespace UserDiaryConsole
                             break;
                         }
                         case 11:
+                            Console.WriteLine("===== Profile Displayed =====");
+                            user.display();
+                            break;
+                        case 12:
                             Console.WriteLine("==== Do you really want to logout? ====\n"+"If Yes press y, Else press n");
                             string response = Console.ReadLine();
                             if (response == "y")
