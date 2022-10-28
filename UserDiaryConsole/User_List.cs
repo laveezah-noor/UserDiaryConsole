@@ -46,7 +46,6 @@ namespace UserDiaryConsole
             {
                 Console.WriteLine($"ID: {user.Id}\n" +
                     $"Name: {user.Name}\n" +
-                    $"Password: {user.Password}\n" +
                     $"Type: {user.Type}\n" +
                     $"Status: {user.Status}\n" +
                     $"Phone: {user.phone}\n" +
