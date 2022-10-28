@@ -24,6 +24,7 @@ namespace UserDiaryConsole
             //     serializer.Serialize(Console.Out, Item);
             Console.WriteLine("\nXml Updated\n");
         }
+
         public static T Deserialize(T Item)
         {
             XmlSerializer deserializer = new XmlSerializer(Item.GetType());

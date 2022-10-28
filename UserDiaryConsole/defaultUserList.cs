@@ -13,10 +13,13 @@ namespace UserDiaryConsole
     {
         [XmlAttribute("ID")]
         public int id;
+        
         [XmlElement("Employees")]
         public User_List<EmployeeUser> Employee_UserList { get; set; }
+        
         [XmlElement("Admins")]
         public User_List<AdminUser> Admin_UserList { get; set; }
+        
         public defaultUserList()
         {
             

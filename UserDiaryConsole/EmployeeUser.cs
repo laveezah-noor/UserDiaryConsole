@@ -17,15 +17,16 @@ namespace UserDiaryConsole
         public EmployeeUser() : base()
         {
         }
+
         public EmployeeUser(bool authorized) : base()
         {
             if (authorized)
             {
-                //Console.WriteLine(this.Id);
                 this.userDiaries = new Diary_List(this.Id);
             }
         }
 
+        //To Register the a new account
         public static void Register(
              string Name,
              string Password,
@@ -40,13 +41,13 @@ namespace UserDiaryConsole
             AdminUser.defaultEmpList.addUser(user);
             user.UpdateUserList();
             user.display();
-            //return this.user;
         }
+
+        //To Create a New Diary
         public void CreateDiary(string name, string content)
         {
             if (this.LogStatus)
             {
-                //console.writeline(name, content);
                 if (this.userDiaries is not null && this.Status == Statuses.active.ToString())
                 {
                     this.userDiaries.addDiary(name, content);
@@ -60,6 +61,8 @@ namespace UserDiaryConsole
 
             } else  Console.WriteLine("Logged out");
         }
+
+        //To delete a diary
         public void DeleteDiary(int diaryID)
         {
             if (this.LogStatus)
@@ -71,6 +74,8 @@ namespace UserDiaryConsole
             } else 
                 Console.WriteLine("Logged out");
         }
+
+        //To update a diary
         public void UpdateDiary(int diaryId, string Name, string Content)
         {
             if (this.LogStatus)
@@ -81,6 +86,7 @@ namespace UserDiaryConsole
             } else Console.WriteLine("Logged out");
         }
 
+        //To find a diary
         public void FindDiary(int diaryID)
         {
             if (this.LogStatus)
@@ -88,6 +94,8 @@ namespace UserDiaryConsole
                 this.userDiaries.FindDiary(diaryID);
             } else Console.WriteLine("Logged out");
         }
+
+        //To display the diaries
         public void DisplayDiaries()
         {
             if (this.LogStatus)
@@ -95,7 +103,6 @@ namespace UserDiaryConsole
                 if (this.userDiaries is not null)
                 {
                     this.userDiaries.displayDiaries();
-                    //this.display();
                 }
                 else
                 {

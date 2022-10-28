@@ -12,9 +12,7 @@ namespace UserDiaryConsole
         public static defaultUserList UserList = new defaultUserList();
         public static User_List<AdminUser> defaultAdminList = UserList.Admin_UserList;
         public static User_List<EmployeeUser> defaultEmpList = UserList.Employee_UserList;
-        //public static AdminUser admin;
-        //public static EmployeeUser emp;
-        public static dynamic currentUser;
+        public static dynamic? currentUser;
 
         public Cache()
         {
@@ -33,10 +31,14 @@ namespace UserDiaryConsole
 
             }
         }
+
+        // Gets the UserList from the Xml
         defaultUserList GetDefaultUserList()
         {
             return Xml<defaultUserList>.Deserialize(UserList);
         }
+        
+        // Gets the DiaryList from the UserList
         List<Diary_List> GetDefaultDiaryList()
         {
             for (int i = 0; i < Cache.defaultEmpList.users.Count; i++)
@@ -49,14 +51,16 @@ namespace UserDiaryConsole
             }
             return defaultDiaryList;
         }
-        public
-            void DisplayUserLists()
+
+        // Displays the UserLists
+        public void DisplayUserLists()
         {
             UserList.Admin_UserList.displayUsers();
             UserList.Employee_UserList.displayUsers();
 
         }
-        // Can only show the user Diary with id and count not the stuff in diaries have fix it.
+
+        // Displays User Diaries with id and count
         public void DisplayDiaryList()
         {
             Console.WriteLine($"\nDiary List Count: {defaultDiaryList.Count} out of {defaultEmpList.users.Count} \n");
@@ -67,44 +71,10 @@ namespace UserDiaryConsole
                 Console.WriteLine($"UserId: {item.user}, UserDiariesCount: {item.diaryCount()}");
             }
         }
-        //public
-        //  // void
-        //  AdminUser
-        //    AdminLog(int userId, string password)
-        //{
-        //    UserLogin<AdminUser> user = UserLogin<AdminUser>.getInstance();
-        //    //Console.WriteLine(currentUser);
-        //    if (currentUser == null)
-        //    {
-        //        if (UserLogin<AdminUser>.getLoggedIn(userId, password))
-        //        {
-        //            currentUser = UserLogin<AdminUser>.currentUser;
-        //            return currentUser;
-        //        }
-        //        return null;
-        //    } else Console.WriteLine("Already Logged In As User");
-        //    return null;
 
-        //}
-        //public EmployeeUser UserLog(int userId, string password)
-        //{
-        //    UserLogin<EmployeeUser> user = UserLogin<EmployeeUser>.getInstance();
-        //    if (currentUser == null)
-        //    {
-        //        if (UserLogin<EmployeeUser>.getLoggedIn(userId, password))
-        //        {
-        //            currentUser = UserLogin<EmployeeUser>.currentUser;
-        //            return currentUser;
-        //        }
-        //        return null;
-        //    }
-        //    Console.WriteLine("Already Logged In As Admin");
-        //    return null;
-        //}
-
+        // To Login
         public dynamic UserLog(int userId, string password)
         {
-            //UserLogin<EmployeeUser> user = UserLogin<EmployeeUser>.getInstance();
             if (currentUser == null)
             {
                 if (UserLogin.getLoggedIn(userId, password))
@@ -117,6 +87,8 @@ namespace UserDiaryConsole
             Console.WriteLine("Already Logged In");
             return null;
         }
+
+        // To Logout
         public void Logout()
         {
             if(currentUser != null && currentUser is EmployeeUser)
@@ -125,17 +97,12 @@ namespace UserDiaryConsole
             
                 UserLogin.getLoggedOut(currentUser);
                 currentUser = null;
-                //admin = null;
-                //emp = null;
             }
             else if (currentUser != null && currentUser is AdminUser)
             {
                 UserLogin user = UserLogin.getInstance();
                 UserLogin.getLoggedOut(currentUser);
                 currentUser = null;
-                //emp = null;
-                //admin = null;   
-
             }
 
         }

@@ -37,8 +37,8 @@ namespace UserDiaryConsole
             count++;
             this.Id = count;
             Cache.UserList.id = count;
-            //Console.WriteLine("Count: "+count);
         }
+
         public void create
             (
             string Name,
@@ -53,35 +53,32 @@ namespace UserDiaryConsole
             this.Type = Type;
             this.LogStatus = false;
         }
-        public bool Login
-            (int userId, string password
-            )
+        
+        public bool Login (int userId, string password)
         {
             if (this.Id == userId && this.Password == password)
             {
-
                 Console.WriteLine($"{this.Name} Logged In ");
                 this.LogStatus = true;
                 UpdateUserList();
                 return true;
             }
-            //Console.WriteLine("Incorrect");
             return false;
         }
+
         public void Logout()
         {
             this.LogStatus = false;
             UpdateUserList();
             Console.WriteLine("Logged Out");
         }
+
         public void UpdateUser(string Name, string Password, string Phone, string Email)
         {
             for (int i = 0; i < 4; i++)
             {
                 if (Name != "" || Password != "" || Phone != "" || Email != "" && this.LogStatus)
                 {
-                    // Console.WriteLine(i)
-
                     if (Name != "")
                     {
                         this.UpdateName(Name);
@@ -109,8 +106,8 @@ namespace UserDiaryConsole
                 }
             }
             this.display();
-
         }
+
         void UpdateName(string input)
         {
             if (input != null && this.LogStatus != false)
@@ -118,6 +115,7 @@ namespace UserDiaryConsole
                 this.Name = input;
             }
         }
+        
         void UpdatePassword(string input)
         {
             if (input != null && this.LogStatus != false)
@@ -125,6 +123,7 @@ namespace UserDiaryConsole
                 this.Password = input;
             }
         }
+        
         public void UpdateStatus(string input)
         {
             if (input != null)
@@ -132,14 +131,17 @@ namespace UserDiaryConsole
                 this.Status = input;
             }
         }
+        
         public void UpdatePhone(string input)
         {
             this.phone = input;
         }
+        
         public void UpdateEmail(string input)
         {
             this.email = input;
         }
+        
         public void display()
         {
             Console.WriteLine("\n" +

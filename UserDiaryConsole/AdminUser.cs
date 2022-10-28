@@ -18,6 +18,7 @@ namespace UserDiaryConsole
         public static User_List<EmployeeUser> defaultEmpList = Cache.defaultEmpList;
         public static defaultUserList defaultUserList = Cache.UserList;
 
+        //To Register the a new account
         public static void Register(
             string Name,
             string Password,
@@ -30,10 +31,8 @@ namespace UserDiaryConsole
             user.UpdateEmail(email);
             user.UpdatePhone(phone);
             Cache.defaultAdminList.addUser(user);
-            //DisplayUserLists();
             user.UpdateUserList();
             user.display();
-            //return this.user;
         }
 
         //To add DiaryList of a specific user inside the default diary list
@@ -42,7 +41,7 @@ namespace UserDiaryConsole
             if (this.LogStatus)
             {
                 defaultDiaryList.Add(userDiary);
-            } else Console.WriteLine("Logged Out");
+            }
         }
 
         //To delete the DiaryList of a specific user inside the default diary list
@@ -62,7 +61,7 @@ namespace UserDiaryConsole
             }
         }
 
-        // Masla h
+        // To Find the Diary List of the user
         public int FindDiaryList(int user)
         {
             if (this.LogStatus)
@@ -83,7 +82,7 @@ namespace UserDiaryConsole
             return 0;
         }
 
-        //To Display the Diaries in the App. Cannot access the data of user diaries HAVE TO REMOVE IT
+        //To Display the Diaries in the App.
         //Can only see the count of the diaries
         public void DisplayDiaryLists()
         {
@@ -93,7 +92,6 @@ namespace UserDiaryConsole
                 foreach (var item in defaultDiaryList)
                 {
                     Console.WriteLine($"UserId: {item.user}, UserDiariesCount: {item.diaryCount()}");
-                    //item.displayDiaries();
                 }
 
             } else Console.WriteLine("Logged Out");
@@ -114,8 +112,8 @@ namespace UserDiaryConsole
                 UpdateUserList();
                 newUser.display();
             } else Console.WriteLine("Not Logged in");
-            //return null;
         }
+
         //To Delete users from the admin portal
         public void DeleteUser(int userId)
         {
@@ -136,7 +134,7 @@ namespace UserDiaryConsole
             }
         }
 
-        //For Implementing search bars
+        //For Implementing search bars, searches the user
         public EmployeeUser FindUser(int userId)
         {
             if (this.LogStatus)
@@ -161,26 +159,19 @@ namespace UserDiaryConsole
                 emp.UpdateStatus(Statuses.active.ToString());
                 UpdateDiaryList();
                 emp.display();
-
             }
         }
 
-        //Have to fix it Admin cannot see the password of the users
-        public
-            void DisplayUserLists()
+        //To Display User List
+        public void DisplayUserLists()
         {
-            //if (LogStatus)
-
             defaultEmpList.displayUsers();
-
         }
-        public
-            void DisplayAdminLists()
+
+        //To Display Admin List
+        public void DisplayAdminLists()
         {
-            //if (LogStatus)
-
             defaultAdminList.displayUsers();
-
         }
     }
 

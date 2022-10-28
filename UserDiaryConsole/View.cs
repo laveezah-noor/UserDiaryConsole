@@ -85,25 +85,6 @@ namespace UserDiaryConsole
         {
             Console.WriteLine("=========== Login ===========\n");
             RunUserLogin(user);
-            //do {
-            //Console.WriteLine("\nDo you want to login as Admin or User?\n"+
-            //    "- To Login as Admin Press 0\n" + "- To Login as User Press 1\n" + "- To Exit Press 2\n");
-            //int opt = Convert.ToInt32(Console.ReadLine());
-            //if (opt == 0) {
-            //    Console.WriteLine("===Admin Login===");
-            //    RunAdminLogin(user);
-            //}
-            //else if (opt == 1)
-            //{
-            //    Console.WriteLine("===User Login===");
-            //    RunUserLogin(user);
-            //}
-            //else if (opt == 2)
-            //{
-            //        break;
-            //}
-            //else { Console.WriteLine("Wrong Input!"); }
-            //} while (user is null);
         }
     void RunUserLogin(dynamic user)
         {
@@ -126,29 +107,7 @@ namespace UserDiaryConsole
                 RunAdminFunctions(user);
                 }
         }
-    //void RunAdminLogin(AdminUser user)
-    //    {
-    //        do
-	   //         {
-    //            Console.WriteLine("Enter your UserId: ");
-    //            int id;
-    //            try
-    //            {
-    //                id = Convert.ToInt32(Console.ReadLine());
-    //            }
-    //            catch
-    //            {
-    //                Console.WriteLine("UserId is not Number!\n Try it again");
-    //                id = Convert.ToInt32(Console.ReadLine());
-    //            } 
-    //            Console.WriteLine("Enter your Password: ");
-    //            string password = Console.ReadLine();
 
-    //            user = cache.AdminLog(id, password);
-
-	   //         } while (user is null);
-    //            RunAdminFunctions(user);
-    //    }
     void RunUserFunctions(EmployeeUser user)
         {
         outer: while (user is not null) {

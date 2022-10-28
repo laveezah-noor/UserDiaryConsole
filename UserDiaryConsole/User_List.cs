@@ -12,23 +12,23 @@ namespace UserDiaryConsole
     {
         
         public List<T> users;
-        public void addUser(T user)
-        {
-            this.users.Add(user);
-        }
+        
         public User_List() {
         this.users = new List<T>();
         }
 
-        public void updateUser()
+        public void addUser(T user)
         {
-
+            this.users.Add(user);
         }
+        
+        public void updateUser() {}
+        
         public void deleteUser(int userId)
         {
             this.users.Remove(findUser(userId));
-
         }
+
         public T findUser(int userId)
         {
             foreach (T user in this.users)
@@ -40,6 +40,7 @@ namespace UserDiaryConsole
             }
             return null;
         }
+        
         public void displayUsers()
         {
             foreach (T user in this.users)

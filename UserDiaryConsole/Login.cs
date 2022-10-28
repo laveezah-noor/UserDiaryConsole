@@ -11,12 +11,14 @@ namespace UserDiaryConsole
         static UserLogin instance = new UserLogin();
         public static dynamic currentUser;
         public UserLogin() { }
+        
         public static void getLoggedOut(dynamic user)
         {
             user.Logout();
             instance = null;
             currentUser = null;
         }
+   
         public static bool getLoggedIn(int userId, string password)
         {
 

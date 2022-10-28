@@ -11,6 +11,7 @@ namespace UserDiaryConsole
     {
         [XmlElement("Diary")]
         public List<Diary> diaries = new List<Diary>();
+
         [XmlAttribute("UserID")]
         public int user;
 
@@ -19,7 +20,8 @@ namespace UserDiaryConsole
             this.user = ID;
         }
         public Diary_List() { }
-        //This is Main Diary
+
+        // To add a new Diary in the list
         public void addDiary(string name, string content)
         {
             Diary diary = new Diary(diaryCount(),name);
@@ -27,6 +29,8 @@ namespace UserDiaryConsole
             this.diaries.Add(diary);
             Console.WriteLine("Diary Created");
         }
+
+        // To update the Diary in the list
         public void UpdateDiary(int diaryId, string Name, string Content)
         {
             Diary diary = FindDiary(diaryId);
@@ -55,6 +59,8 @@ namespace UserDiaryConsole
                 Console.WriteLine("Diary Not Present");
             }
         }
+
+        // To delete the diary from the list
         public void deleteDiary(int id)
         {
             Diary diary = FindDiary(id);
@@ -67,6 +73,8 @@ namespace UserDiaryConsole
                 Console.WriteLine("Diary Not Present");
             }
         }
+
+        // To find the diary from the list
         public Diary FindDiary(int diaryId)
         {
             foreach (var item in diaries)
@@ -81,6 +89,8 @@ namespace UserDiaryConsole
             Console.WriteLine("Not Found!");
             return null;
         }
+
+        // To display diaries of the list
         public void displayDiaries()
         {
             if (this.diaries.Count != 0) {
@@ -91,6 +101,8 @@ namespace UserDiaryConsole
             
             } else Console.WriteLine("No Diaries Created Yet!");
         }
+
+        // To display diary count
         public int diaryCount()
         {
             return this.diaries.Count;
