@@ -65,10 +65,11 @@ namespace UserDiaryConsole
             if (this.LogStatus)
             {
                 this.userDiaries.deleteDiary(diaryID);
+                Console.WriteLine("Item Deleted!");
                 UpdateDiaryList();
 
-            }
-            Console.WriteLine("Logged out");
+            } else 
+                Console.WriteLine("Logged out");
         }
         public void UpdateDiary(int diaryId, string Name, string Content)
         {
@@ -77,8 +78,7 @@ namespace UserDiaryConsole
                 this.userDiaries.UpdateDiary(diaryId, Name, Content);
                 UpdateDiaryList();
 
-            }
-            Console.WriteLine("Logged out");
+            } else Console.WriteLine("Logged out");
         }
 
         public void FindDiary(int diaryID)
@@ -94,8 +94,8 @@ namespace UserDiaryConsole
             {
                 if (this.userDiaries is not null)
                 {
-                    this.display();
                     this.userDiaries.displayDiaries();
+                    //this.display();
                 }
                 else
                 {

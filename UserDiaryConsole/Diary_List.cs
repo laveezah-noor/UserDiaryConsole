@@ -48,6 +48,7 @@ namespace UserDiaryConsole
                         diary.updateContent(Content);
                     }
                 }
+                Console.WriteLine(diary.display());
             }
             else
             {
@@ -82,10 +83,13 @@ namespace UserDiaryConsole
         }
         public void displayDiaries()
         {
-            for (int i = 0; i < this.diaries.Count; i++)
-            {
-                Console.WriteLine(this.diaries[i].display(user));
-            }
+            if (this.diaries.Count != 0) {
+                for (int i = 0; i < this.diaries.Count; i++)
+                {
+                    Console.WriteLine(this.diaries[i].display(user));
+                }
+            
+            } else Console.WriteLine("No Diaries Created Yet!");
         }
         public int diaryCount()
         {

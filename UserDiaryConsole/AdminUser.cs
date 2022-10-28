@@ -46,6 +46,7 @@ namespace UserDiaryConsole
         }
 
         //To delete the DiaryList of a specific user inside the default diary list
+        //Can also add the functionality to unauthorize the user but keep the diaries
         public void DeleteDiaryList(int user)
         {
             if (this.LogStatus)
@@ -56,9 +57,9 @@ namespace UserDiaryConsole
                 {
                     defaultDiaryList.RemoveAt(itemIndex);
                     emp.UpdateStatus(Statuses.pending.ToString());
+                    UpdateDiaryList();
                 }
             }
-            Console.WriteLine("Logged Out");
         }
 
         // Masla h
@@ -71,7 +72,7 @@ namespace UserDiaryConsole
                     if (item.user == user)
                     {
                         Console.WriteLine("\nItem Found!\n");
-                        item.diaryCount();
+                        Console.WriteLine($"Diary Count: {item.diaryCount()}");
                         return defaultDiaryList.IndexOf(item);
                     }
                 }
@@ -123,7 +124,6 @@ namespace UserDiaryConsole
                 defaultEmpList.deleteUser(userId);
                 UpdateUserList();
             }
-            Console.WriteLine("Logged Out");
         }
 
         //To Delete admin from the admin portal
@@ -134,7 +134,6 @@ namespace UserDiaryConsole
                 defaultAdminList.deleteUser(userId);
                 UpdateUserList();
             }
-            Console.WriteLine("Logged Out");
         }
 
         //For Implementing search bars
@@ -146,7 +145,6 @@ namespace UserDiaryConsole
                 emp.display();
                 return emp;
             }
-            Console.WriteLine("Logged Out");
             return null;
         }
 

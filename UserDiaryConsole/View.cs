@@ -23,7 +23,7 @@ namespace UserDiaryConsole
             {
                 Console.WriteLine("\nDo you want to Login or Register an Accout?\n"+
                 "- To Login Press 0\n" + "- To Register Press 1\n" + "- To Exit Press 2\n");
-            int opt = Convert.ToInt32(Console.ReadLine());
+            int opt = getIntInput();
             if (opt == 0) {
                     LoginInterface();
             }
@@ -44,7 +44,7 @@ namespace UserDiaryConsole
             do {
             Console.WriteLine("\nDo you want to Create Account as Admin or User?\n"+
                 "- To Register as Admin Press 0\n" + "- To Register as User Press 1\n" + "- To Exit Press 2\n");
-            int opt = Convert.ToInt32(Console.ReadLine());
+            int opt = getIntInput();
             if (opt == 0) {
                 Console.WriteLine("===Admin Register===");
                 Console.WriteLine("Enter Name:");
@@ -110,16 +110,7 @@ namespace UserDiaryConsole
             do
 	            {
                 Console.WriteLine("Enter your UserId: ");
-                int id;
-                try
-                {
-                    id = Convert.ToInt32(Console.ReadLine());
-                }
-                catch
-                {
-                    Console.WriteLine("UserId is not Number!\n Try it again");
-                    id = Convert.ToInt32(Console.ReadLine());
-                } 
+                int id = getIntInput(); 
                 Console.WriteLine("Enter your Password: ");
                 string password = Console.ReadLine();
 
@@ -171,12 +162,11 @@ namespace UserDiaryConsole
                         "- To Update your Profile Press 5\n" +
                         "- To Display your Profile Press 6\n" +
                         "- To Logout Press 7\n");
-                    int input = Convert.ToInt32(Console.ReadLine());
-                    switch (input)
+                    int input = getIntInput();
+                switch (input)
 	                {
                         case 0:
                         {
-
                             Console.WriteLine("==== To Create a Diary ====\n"+
                             "Enter Name of the Diary:");
                             string name = Console.ReadLine();
@@ -189,7 +179,7 @@ namespace UserDiaryConsole
                         {
                             Console.WriteLine("==== To Update a Diary ====\n"+
                             "Enter Diary Id:");
-                            int id = Convert.ToInt32(Console.ReadLine());
+                            int id = getIntInput();
                             Console.WriteLine("Enter Name of the Diary:");
                             string name = Console.ReadLine();
                             Console.WriteLine("Enter Content: ");
@@ -201,7 +191,7 @@ namespace UserDiaryConsole
                         {
                             Console.WriteLine("==== To Find a Diary ====\n"+
                             "Enter Diary Id:");
-                            int id = Convert.ToInt32(Console.ReadLine());
+                            int id = getIntInput();
                             user.FindDiary(id);
                             break;
                         }
@@ -209,7 +199,7 @@ namespace UserDiaryConsole
                         { 
                             Console.WriteLine("==== To Delete a Diary ====\n"+
                             "Enter Diary Id:");
-                            int id = Convert.ToInt32(Console.ReadLine());
+                            int id = getIntInput();
                             user.DeleteDiary(id);
                             break;
                         }
@@ -272,8 +262,8 @@ namespace UserDiaryConsole
                         "- To Update your Profile Press 10\n" +
                         "- To Display your Profile Press 11\n" +
                         "- To Logout Press 12\n");
-                    int input = Convert.ToInt32(Console.ReadLine());
-                    switch (input)
+                    int input = getIntInput();
+                switch (input)
 	                {
                         case 0:
                         {
@@ -290,7 +280,7 @@ namespace UserDiaryConsole
                         {
                             Console.WriteLine("==== To Delete a User ====\n"+
                             "Enter User Id:");
-                            int id = Convert.ToInt32(Console.ReadLine());
+                            int id = getIntInput();
                             user.DeleteUser(id);
                             break;
                         }
@@ -299,7 +289,7 @@ namespace UserDiaryConsole
 
                             Console.WriteLine("==== To Find a User ====\n"+
                             "Enter User Id:");
-                            int id = Convert.ToInt32(Console.ReadLine());
+                            int id = getIntInput();
                             user.FindUser(id);
                             break;
                         }
@@ -307,7 +297,7 @@ namespace UserDiaryConsole
                         { 
                             Console.WriteLine("==== To Authorize a User ====\n"+
                             "Enter User Id:");
-                            int id = Convert.ToInt32(Console.ReadLine());
+                            int id = getIntInput();
                             user.AuthorizeUser(id);
                             break;
                         }
@@ -315,7 +305,7 @@ namespace UserDiaryConsole
                         { 
                             Console.WriteLine("==== To Unauthorize a User ====\n"+
                             "Enter User Id:");
-                            int id = Convert.ToInt32(Console.ReadLine());
+                            int id = getIntInput();
                             user.DeleteDiaryList(id);
                             break;
                         }
@@ -323,7 +313,7 @@ namespace UserDiaryConsole
                         { 
                             Console.WriteLine("==== To Find a User Diary ====\n"+
                             "Enter User Id:");
-                            int id = Convert.ToInt32(Console.ReadLine());
+                            int id = getIntInput();
                             user.FindDiaryList(id);
                             break;
                         }
@@ -331,7 +321,7 @@ namespace UserDiaryConsole
                         {
                             Console.WriteLine("==== To Delete an Admin ====\n"+
                             "Enter Admin Id:");
-                            int id = Convert.ToInt32(Console.ReadLine());
+                            int id = getIntInput();
                             user.DeleteAdmin(id);
                             break;
                         }
@@ -389,6 +379,22 @@ namespace UserDiaryConsole
                     
         }
     }
+
+    int getIntInput()
+        {
+            int id;
+            try
+            {
+                id = Convert.ToInt32(Console.ReadLine());
+                return id;
+            }
+            catch
+            {
+                Console.WriteLine("Incorrect input!\n Try it again\n");
+                id = getIntInput();
+                return id;
+            }
+        }
 }
 }
 

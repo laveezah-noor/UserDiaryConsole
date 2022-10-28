@@ -43,5 +43,10 @@ namespace UserDiaryConsole
         {
             return $"ID: {this.Id} ,Title: {this.Name}, Content: {this.Content}, UserID: {user}";
         }
+
+        public string display()
+        {
+            return $"ID: {this.Id} ,Title: {this.Name}, Content: {this.Content}";
+        }
     }
 }
