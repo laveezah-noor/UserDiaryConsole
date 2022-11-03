@@ -8,64 +8,116 @@ namespace UserDiaryConsole
 {
     public class Cache
     {
-        public static List<Diary_List> defaultDiaryList = new List<Diary_List>();
-        public static defaultUserList UserList = new defaultUserList();
-        public static User_List<AdminUser> defaultAdminList = UserList.Admin_UserList;
-        public static User_List<EmployeeUser> defaultEmpList = UserList.Employee_UserList;
-        public static dynamic? currentUser;
+        static Cache instance = null;
+        public List<string> UsernameList;
+        public List<Diary_List> defaultDiaryList;
+        public defaultUserList UserList = new defaultUserList();
 
-        public Cache()
-        {
-            try
-            {
-            Cache.UserList = GetDefaultUserList();
-            Cache.defaultEmpList = Cache.UserList.Employee_UserList;
-            Cache.defaultAdminList = Cache.UserList.Admin_UserList;
-            Cache.defaultDiaryList = GetDefaultDiaryList();
-            
-            
-            }
-            catch (Exception ex)
-            {
-                Xml<defaultUserList>.Serialize(Cache.UserList);
-
-            }
-        }
-
-        // Gets the UserList from the Xml
-        defaultUserList GetDefaultUserList()
-        {
-            return Xml<defaultUserList>.Deserialize(UserList);
-        }
+        public List<User> defaultAdminList;
+        public List<User> defaultEmpList = new List<User>();
         
+        public User currentUser;
+
+        public static Cache getCache()
+        {
+            if (instance == null)
+            {
+                instance = new Cache();
+            };
+            return instance;
+        }
+
+        private Cache()
+        {
+            UsernameList = new List<string>();
+            defaultDiaryList = new List<Diary_List>();
+
+            UserList = Xml<defaultUserList>.Deserialize(UserList);
+            if (UserList == null)
+            {
+                UserList = new defaultUserList();
+                User admin = new User("admin", "Admin", "admin","admin","active", "", "");
+
+                Xml<defaultUserList>.Serialize(UserList);
+
+            }
+            defaultEmpList = GetEmpList();
+            defaultAdminList = GetAdminList();
+            defaultDiaryList = GetDefaultDiaryList();
+            UsernameList = GetUsernameList();
+            //Console.WriteLine(defaultDiaryList is not null);
+        }
+        List<User> GetEmpList()
+        {
+            for (int i = 0; i < Cache.getCache().UserList.UsersList.Count; i++)
+            {
+                var item = UserList.UsersList[i];
+                if (item.Type == Types.user.ToString())
+                {
+                    defaultEmpList.Add(item);
+                }
+            }
+            return defaultEmpList;
+        }
+        public List<User> GetAdminList()
+        {
+            defaultAdminList = new List<User>();
+            for (int i = 0; i < Cache.getCache().UserList.UsersList.Count; i++)
+            {
+                var item = UserList.UsersList[i];
+                if (item.Type == Types.admin.ToString())
+                {
+                    defaultAdminList.Add(item);
+                }
+            }
+            return defaultAdminList;
+        }
+
         // Gets the DiaryList from the UserList
         List<Diary_List> GetDefaultDiaryList()
         {
-            for (int i = 0; i < Cache.defaultEmpList.users.Count; i++)
+            for (int i = 0; i < Cache.getCache().UserList.UsersList.Count; i++)
             {
-                var item = Cache.defaultEmpList.users[i];
+                var item = UserList.UsersList[i];
                 if (item.userDiaries is not null)
                 {
                     defaultDiaryList.Add(item.userDiaries);
                 }
             }
+            //for (int i = 0; i < Cache.defaultEmpList.users.Count; i++)
+            //{
+            //    var item = Cache.defaultEmpList.users[i];
+            //    if (item.userDiaries is not null)
+            //    {
+            //        defaultDiaryList.Add(item.userDiaries);
+            //    }
+            //}
             return defaultDiaryList;
         }
+        public List<string> GetUsernameList()
+        {
+            for (int i = 0; i < UserList.UsersList.Count; i++)
+            {
+                var item = UserList.UsersList[i];
+                UsernameList.Add(item.UserName);
 
+            }
+            return UsernameList;
+        }
         // Displays the UserLists
         public void DisplayUserLists()
         {
-            UserList.Admin_UserList.displayUsers();
-            UserList.Employee_UserList.displayUsers();
+            //UserList.Admin_UserList.displayUsers();
+            //UserList.Employee_UserList.displayUsers();
 
         }
 
         // Displays User Diaries with id and count
         public void DisplayDiaryList()
         {
-            Console.WriteLine($"\nDiary List Count: {defaultDiaryList.Count} out of {defaultEmpList.users.Count} \n");
-            
-            foreach(var item in Cache.defaultDiaryList)
+            Console.WriteLine($"\nDiary List Count: {defaultDiaryList.Count} out of {defaultEmpList.Count} \n");
+
+            foreach (var item in Cache.getCache().defaultDiaryList)
             {
 
                 Console.WriteLine($"UserId: {item.user}, UserDiariesCount: {item.diaryCount()}");
@@ -73,40 +125,88 @@ namespace UserDiaryConsole
         }
 
         // To Login
-        public dynamic UserLog(int userId, string password)
+        public dynamic UserLog(string username, string password)
         {
+            Console.WriteLine("I'm in login");
             if (currentUser == null)
             {
-                if (UserLogin.getLoggedIn(userId, password))
+                User user = UserList.findUser(username);
+                if (user is not null)
                 {
-                    currentUser = UserLogin.currentUser;
-                    return currentUser;
+                    if (user.Login(username, password))
+                    {
+                        currentUser = user;
+
+                        return currentUser;
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("\nIncorrect Credentials\n");
+                        return null;
+                    }
                 }
-                return null;
+                //dynamic user = Cache.UserList.Employee_UserList.findUser(username);
+                //if (user is not null)
+                //{
+                //    if (user.Login(username, password))
+                //    {
+                //        currentUser = user;
+
+                //        return currentUser;
+                //    }
+                //    else
+                //    {
+                //        Console.Clear();
+                //        Console.WriteLine("\nIncorrect Credentials\n");
+                //        return false;
+                //    }
+                //    user = currentUser;
+                //}
+                //user = Cache.UserList.Admin_UserList.findUser(username);
+                //if (user is not null)
+                //{
+                //    if (user.Login(username, password))
+                //    {
+                //        currentUser = user;
+                //        return currentUser;
+                //    }
+                //    else
+                //    {
+                //        Console.Clear();
+                //        Console.WriteLine("\nIncorrect Credentials\n");
+                //        return false;
+                //    }
+                //}
+                Console.Clear();
+                Console.WriteLine("\nIncorrect Credentials\n");
+
+
             }
-            Console.WriteLine("Already Logged In");
-            return null;
+            else Console.WriteLine("Already Logged In");
+            return currentUser;
+            //if (UserLogin.getLoggedIn(username, password))
+            //{
+            //    currentUser = UserLogin.currentUser;
+            //    return currentUser;
+            //}
+            //return currentUser;
+            //}
+            //Console.WriteLine("Already Logged In");
+            //    return null;
         }
 
         // To Logout
         public void Logout()
         {
-            if(currentUser != null && currentUser is EmployeeUser)
+            if (currentUser != null)
             {
-                UserLogin user = UserLogin.getInstance();
-            
-                UserLogin.getLoggedOut(currentUser);
-                currentUser = null;
-            }
-            else if (currentUser != null && currentUser is AdminUser)
-            {
-                UserLogin user = UserLogin.getInstance();
-                UserLogin.getLoggedOut(currentUser);
+                currentUser.Logout();
                 currentUser = null;
             }
 
         }
-        
+
     }
 
 }

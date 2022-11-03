@@ -20,13 +20,19 @@ namespace UserDiaryConsole
         public void addUser(T user)
         {
             this.users.Add(user);
+            Cache.getCache().UsernameList = Cache.getCache().GetUsernameList();
         }
         
         public void updateUser() {}
         
-        public void deleteUser(int userId)
+        public bool deleteUser(int userId)
         {
-            this.users.Remove(findUser(userId));
+            if (findUser(userId) != null ) { 
+                this.users.Remove(findUser(userId));
+
+                Cache.getCache().UsernameList = Cache.getCache().GetUsernameList(); 
+                return true; }
+            else { Console.Clear(); Console.WriteLine("\nNo user available of this Id!\n"); return false; }
         }
 
         public T findUser(int userId)
@@ -40,13 +46,25 @@ namespace UserDiaryConsole
             }
             return null;
         }
-        
+        public T findUser(string userId)
+        {
+            foreach (T user in this.users)
+            {
+                if (user.UserName == userId)
+                {
+                    return user;
+                }
+            }
+            return null;
+        }
+
         public void displayUsers()
         {
             foreach (T user in this.users)
             {
                 Console.WriteLine($"ID: {user.Id}\n" +
                     $"Name: {user.Name}\n" +
+                    $"UserName: {user.UserName}\n" +
                     $"Type: {user.Type}\n" +
                     $"Status: {user.Status}\n" +
                     $"Phone: {user.phone}\n" +

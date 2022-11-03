@@ -11,28 +11,44 @@ namespace UserDiaryConsole
     {
         public static void Serialize(T Item)
         {
-            //Type type = Item.GetType().GetProperty("Item").PropertyType;
             Type type = Item.GetType();
-            //Console.WriteLine($"Item Name: {type.GetProperty("Item")}");
-            //Console.WriteLine(Item);
-            XmlSerializer serializer = new XmlSerializer(Item.GetType());
-            using (TextWriter writer = new StreamWriter(@$"{type}.xml"))
+            try
             {
-                serializer.Serialize(writer, Item);
-                writer.Close();
+                XmlSerializer serializer = new XmlSerializer(Item.GetType());
+                using (TextWriter writer = new StreamWriter(@$"{type}.xml"))
+                {
+                    serializer.Serialize(writer, Item);
+                    writer.Close();
+                }
             }
-            //     serializer.Serialize(Console.Out, Item);
+            catch (Exception ex)
+            {
+                string stException = string.Format("Exception: {0} \n Message: {1}", ex.StackTrace, ex.Message);
+                Console.WriteLine(stException);
+            }
+
             Console.WriteLine("\nXml Updated\n");
         }
 
         public static T Deserialize(T Item)
         {
-            XmlSerializer deserializer = new XmlSerializer(Item.GetType());
-            TextReader reader = new StreamReader(@$"{Item.GetType()}.xml");
-            object obj = deserializer.Deserialize(reader);
-            T XmlData = (T)obj;
-            //Console.WriteLine(XmlData);
-            reader.Close();
+            T XmlData = default(T);
+            try
+            {
+                XmlSerializer deserializer = new XmlSerializer(Item.GetType());
+                using (TextReader reader = new StreamReader(@$"{Item.GetType()}.xml"))
+                {
+                    object obj = deserializer.Deserialize(reader);
+                    XmlData = (T)obj;
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                string stException = string.Format("Exception: {0} \n Message: {1}", ex.StackTrace, ex.Message);
+                Console.WriteLine(stException);
+            }
+
             return XmlData;
         }
     }

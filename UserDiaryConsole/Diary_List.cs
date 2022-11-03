@@ -24,14 +24,23 @@ namespace UserDiaryConsole
         // To add a new Diary in the list
         public void addDiary(string name, string content)
         {
-            Diary diary = new Diary(diaryCount(),name);
+            Diary diary = new Diary(diaryId(),name);
             diary.create(content);
             this.diaries.Add(diary);
             Console.WriteLine("Diary Created");
         }
+        int diaryId()
+        {
+            if (diaryCount() == 0 || diaryCount() == this.diaries.Last().Id)
+            {
+                return diaryCount()+1;
+            }
+            else return this.diaries.Last().Id + 1;
+
+        }
 
         // To update the Diary in the list
-        public void UpdateDiary(int diaryId, string Name, string Content)
+        public bool UpdateDiary(int diaryId, string Name, string Content)
         {
             Diary diary = FindDiary(diaryId);
             if (diary != null)
@@ -52,25 +61,28 @@ namespace UserDiaryConsole
                         diary.updateContent(Content);
                     }
                 }
-                Console.WriteLine(diary.display());
+                return true;
             }
             else
             {
                 Console.WriteLine("Diary Not Present");
+                return false;
             }
         }
 
         // To delete the diary from the list
-        public void deleteDiary(int id)
+        public bool deleteDiary(int id)
         {
             Diary diary = FindDiary(id);
             if (diary != null)
             {
                 this.diaries.Remove(diary);
+                return true;
             }
             else
             {
                 Console.WriteLine("Diary Not Present");
+                return false;
             }
         }
 
