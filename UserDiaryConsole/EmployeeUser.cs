@@ -55,7 +55,7 @@
 //                if (this.userDiaries is not null && this.Status == Statuses.active.ToString())
 //                {
 //                    this.userDiaries.addDiary(name, content);
-//                    UpdateDiaryList();
+//                    Cache.getCache().UpdateDiaryList();
 //                }
 //                else
 //                {
@@ -73,7 +73,7 @@
 //            {
 //                if (this.userDiaries.deleteDiary(diaryID))
 //                {
-//                UpdateDiaryList();
+//                Cache.getCache().UpdateDiaryList();
 //                    Console.Clear();
 //                    Console.WriteLine("\nDiary Deleted!");
 
@@ -96,7 +96,7 @@
 //            {
 //                if (this.userDiaries.UpdateDiary(diaryId, Name, Content))
 //                { 
-//                    UpdateDiaryList();
+//                    Cache.getCache().UpdateDiaryList();
 //                    Console.Clear();
 //                    Console.WriteLine(this.userDiaries.diaries[diaryId].display());
 //                    Console.WriteLine("Diary Updated!"); }

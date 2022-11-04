@@ -14,7 +14,7 @@ namespace UserDiaryConsole
         [XmlAttribute("ID")]
         public int id;
 
-        [XmlElement("Users")]
+        [XmlElement("User")]
         public List<User> UsersList { get; set; }
 
         public defaultUserList()

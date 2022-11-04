@@ -69,10 +69,6 @@ namespace UserDiaryConsole
             }
             else if (Status == "pending") this.Status = Statuses.pending.ToString();
             this.LogStatus = false;
-            Cache.getCache().UserList.addUser(this);
-            UpdateUserList();
-            Console.Clear();
-            this.display();
             
         }
 
@@ -82,7 +78,7 @@ namespace UserDiaryConsole
             {
                 Console.WriteLine($"{this.Name} Logged In ");
                 this.LogStatus = true;
-                UpdateUserList();
+               Cache.getCache().UpdateUserList();
                 return true;
             }
             return false;
@@ -91,7 +87,7 @@ namespace UserDiaryConsole
         public void Logout()
         {
             this.LogStatus = false;
-            UpdateUserList();
+           Cache.getCache().UpdateUserList();
             Console.WriteLine("Logged Out");
         }
 
@@ -126,7 +122,7 @@ namespace UserDiaryConsole
                         Console.WriteLine(Email);
                     }
                 }
-                UpdateUserList();
+               Cache.getCache().UpdateUserList();
                 Console.Clear();
                 Console.WriteLine("\nProfile Updated!\n");
                 this.display();
@@ -148,12 +144,12 @@ namespace UserDiaryConsole
                         $"ID: {this.Id}\n" +
                         $"Username: {this.UserName}\n" +
                         $"Name: {this.Name}\n" +
-                        $"Password: {this.Password}\n" +
+                        $"Password: {this.Password}\n" +    
                         $"Type: {this.Type}\n" +
                         $"Status: {this.Status}\n" +
                         $"Phone: {this.phone}\n" +
                         $"Email: {this.email}\n" +
-                        $"IsDiaries: {this.userDiaries is not null}\n");
+                        $"Authorize: {this.userDiaries is not null}\n");
 
         }
         //To Create a New Diary
@@ -164,7 +160,7 @@ namespace UserDiaryConsole
                 if (this.userDiaries is not null && this.Status == Statuses.active.ToString())
                 {
                     this.userDiaries.addDiary(name, content);
-                    UpdateDiaryList();
+                    Cache.getCache().UpdateDiaryList();
                 }
                 else
                 {
@@ -183,7 +179,7 @@ namespace UserDiaryConsole
             {
                 if (this.userDiaries.deleteDiary(diaryID))
                 {
-                    UpdateDiaryList();
+                    Cache.getCache().UpdateDiaryList();
                     Console.Clear();
                     Console.WriteLine("\nDiary Deleted!");
 
@@ -207,9 +203,10 @@ namespace UserDiaryConsole
             {
                 if (this.userDiaries.UpdateDiary(diaryId, Name, Content))
                 {
-                    UpdateDiaryList();
+                    Cache.getCache().UpdateDiaryList();
+                    Diary diary = this.userDiaries.FindDiary(diaryId);
                     Console.Clear();
-                    Console.WriteLine(this.userDiaries.diaries[diaryId].display());
+                    Console.WriteLine(diary.display());
                     Console.WriteLine("Diary Updated!");
                 }
                 else
@@ -219,7 +216,10 @@ namespace UserDiaryConsole
                 }
 
             }
-            else Console.Clear(); Console.WriteLine("\nNothing to Update!");
+            else { 
+                Console.Clear(); Console.WriteLine("\nNothing to Update!");
+            
+            }
         }
 
         //To find a diary
@@ -250,17 +250,6 @@ namespace UserDiaryConsole
             else Console.WriteLine("Logged out");
         }
 
-        //To update the XML DiaryList
-        public void UpdateDiaryList()
-        {
-            UpdateUserList();
-        }
-        //To update the XML UserList
-        public void UpdateUserList()
-        {
-            Xml<defaultUserList>.Serialize(Cache.getCache().UserList);
-
-        }
 
         //Admin Functions
 
@@ -288,7 +277,7 @@ namespace UserDiaryConsole
                     DisplayDiaryLists();
                     emp.UpdateStatus(Statuses.pending.ToString());
                     emp.userDiaries = null;
-                    UpdateDiaryList();
+                    Cache.getCache().UpdateDiaryList();
                     Console.Clear();
 
                     Console.WriteLine("\nUser Unauthorized\n");
@@ -355,7 +344,8 @@ namespace UserDiaryConsole
                 {
                 newUser = new User(UserName, Name, Password, Types.user.ToString(), Statuses.active.ToString(), "", "");
                     CreateDiaryList(newUser.userDiaries);
-                    UpdateUserList();
+                    Cache.getCache().UserList.addUser(newUser);
+                    Cache.getCache().UpdateUserList();
                     Console.Clear();
                     newUser.display();
 
@@ -364,10 +354,10 @@ namespace UserDiaryConsole
                 {
                 newUser = new User(UserName, Name, Password, Types.admin.ToString(), Statuses.active.ToString(), "", "");
                     CreateDiaryList(newUser.userDiaries);
-                    UpdateUserList();
+                    Cache.getCache().UserList.addUser(newUser);
+                    Cache.getCache().UpdateUserList();
                     Console.Clear();
                     newUser.display();
-
                 }
 
             }
@@ -385,7 +375,7 @@ namespace UserDiaryConsole
                 
                 //Cache.defaultEmpList.addUser(newUser);
                 CreateDiaryList(newUser.userDiaries);
-                UpdateUserList();
+               Cache.getCache().UpdateUserList();
                 Console.Clear();
                 newUser.display();
             }
@@ -414,7 +404,7 @@ namespace UserDiaryConsole
             {
                 if (Cache.getCache().UserList.deleteUser(userId))
                 {
-                    UpdateUserList();
+                   Cache.getCache().UpdateUserList();
                     Console.Clear();
                     Console.WriteLine("User Deleted!");
                 }
@@ -430,7 +420,7 @@ namespace UserDiaryConsole
                 {
                     if (Cache.getCache().UserList.deleteUser(userId))
                     {
-                        UpdateUserList();
+                       Cache.getCache().UpdateUserList();
                         Console.Clear();
                         Console.WriteLine("Admin Removed Successfully!");
 
@@ -480,7 +470,7 @@ namespace UserDiaryConsole
                         emp.userDiaries = new Diary_List(emp.Id);
                         CreateDiaryList(emp.userDiaries);
                         emp.UpdateStatus(Statuses.active.ToString());
-                        UpdateDiaryList();
+                        Cache.getCache().UpdateDiaryList();
                         Console.Clear();
                         Console.WriteLine("\nUser Authorized\n");
                         emp.display();

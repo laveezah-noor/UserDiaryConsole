@@ -9,27 +9,14 @@ namespace UserDiaryConsole
 {
     internal class Utility
     {
-        public static int toInt(string input)
+        public static bool isNumeric(dynamic input)
         {
-            return Convert.ToInt32(input);
+            if (!string.IsNullOrEmpty(input) && int.TryParse(input, out int n))
+                return true;
+            return false;
         }
 
-        public static int getIntInput()
-        {
-            int id;
-            try
-            {
-                id = Convert.ToInt32(getInput());
-                return id;
-            }
-            catch
-            {
-                Console.WriteLine("Incorrect input!\n Try it again\n");
-                id = getIntInput();
-                return id;
-            }
-        }
-        public static string getInput(string label)
+        public static string ValidateInput(string label)
         {
             string input = Console.ReadLine();
             if (input is not null && input != "" && input != " ")
@@ -45,10 +32,29 @@ namespace UserDiaryConsole
                 return input;
             }
         }
+
+        public static string getInput(string label)
+        {
+            Console.WriteLine(label);
+            string input = Console.ReadLine();
+            if (!string.IsNullOrEmpty(input))
+            {
+                return input;
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Incorrect or Null input!\nTry it again\\nPress to Try again!");
+                Console.ReadKey();
+                input = getInput(label);
+                return input;
+            }
+        }
+
         public static string getInput()
         {
             string input = Console.ReadLine();
-            if (input is not null && input != "" && input != " ")
+            if (!string.IsNullOrEmpty(input))
             {
                 return input;
             }
@@ -60,43 +66,22 @@ namespace UserDiaryConsole
                 return input;
             }
         }
-        public static string getUsernameInput()
+
+        public static bool ValidateUsername(string input)
         {
-            String username = getInput();
-            if (Cache.getCache().UsernameList.Contains(username))
+            if (Cache.getCache().UsernameList.Contains(input))
             {
-                Console.Clear();
-                Console.WriteLine("Username already present\nEnter an unique username\nEnter Username:");
-                username = getUsernameInput();
-                return username;
+                Console.WriteLine("\nUsername already present\nEnter an unique username\nPress to Try again!");
+                Console.ReadKey();
+                return false;
             }
             else
             {
-                return username;
+                return true;
             }
         }
-        public static string getPhoneInput()
-        {
-            string input = Console.ReadLine();
-            if (!string.IsNullOrEmpty(input) && input != "exit")
-            {
-                var r = new Regex(@"^\(?(03[-.●]?[0-9]{2})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$");
-                if (r.IsMatch(input))
-                {
-                    return input;
-                }
-                else
-                {
-                    Console.Clear();
-                    Console.WriteLine("\nIncorrect Phone Format\nTry Again\nEnter Phone Number (03xx-xxxxxxx):\n");
-                    input = getPhoneInput();
-                }
-            }
-            return input;
 
-        }
-
-        public static bool ValidateEmail( string input)
+        public static bool ValidateEmail(string input)
         {
             if (input != "exit" && !string.IsNullOrEmpty(input))
             {
@@ -126,33 +111,6 @@ namespace UserDiaryConsole
             return false;
         }
 
-        public static string getEmailInput()
-        {
-            string input = Console.ReadLine();
-            if (input != "exit" && !string.IsNullOrEmpty(input))
-            {
-                string expression = "\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*";
-
-                if (Regex.IsMatch(input, expression))
-                {
-                    if (Regex.Replace(input, expression, string.Empty).Length == 0)
-                    {
-                        return input;
-                    }
-                }
-
-                else
-                {
-
-                    Console.Clear();
-                    //Console.WriteLine(trimmedEmail);
-                    Console.WriteLine("\nIncorrect Email Format\nTry Again\nEnter Email Address:\n");
-                    input = getEmailInput();
-                }
-            }
-            return input;
-
-        }
 
     }
 }

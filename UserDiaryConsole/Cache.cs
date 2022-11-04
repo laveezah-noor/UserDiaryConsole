@@ -8,7 +8,7 @@ namespace UserDiaryConsole
 {
     public class Cache
     {
-        static Cache instance = null;
+        static Cache instance;
         public List<string> UsernameList;
         public List<Diary_List> defaultDiaryList;
         public defaultUserList UserList = new defaultUserList();
@@ -27,7 +27,7 @@ namespace UserDiaryConsole
             return instance;
         }
 
-        private Cache()
+        Cache()
         {
             UsernameList = new List<string>();
             defaultDiaryList = new List<Diary_List>();
@@ -49,7 +49,7 @@ namespace UserDiaryConsole
         }
         List<User> GetEmpList()
         {
-            for (int i = 0; i < Cache.getCache().UserList.UsersList.Count; i++)
+            for (int i = 0; i < UserList.UsersList.Count; i++)
             {
                 var item = UserList.UsersList[i];
                 if (item.Type == Types.user.ToString())
@@ -62,7 +62,7 @@ namespace UserDiaryConsole
         public List<User> GetAdminList()
         {
             defaultAdminList = new List<User>();
-            for (int i = 0; i < Cache.getCache().UserList.UsersList.Count; i++)
+            for (int i = 0; i < UserList.UsersList.Count; i++)
             {
                 var item = UserList.UsersList[i];
                 if (item.Type == Types.admin.ToString())
@@ -76,7 +76,7 @@ namespace UserDiaryConsole
         // Gets the DiaryList from the UserList
         List<Diary_List> GetDefaultDiaryList()
         {
-            for (int i = 0; i < Cache.getCache().UserList.UsersList.Count; i++)
+            for (int i = 0; i < UserList.UsersList.Count; i++)
             {
                 var item = UserList.UsersList[i];
                 if (item.userDiaries is not null)
@@ -127,7 +127,7 @@ namespace UserDiaryConsole
         // To Login
         public dynamic UserLog(string username, string password)
         {
-            Console.WriteLine("I'm in login");
+
             if (currentUser == null)
             {
                 User user = UserList.findUser(username);
@@ -204,6 +204,18 @@ namespace UserDiaryConsole
                 currentUser.Logout();
                 currentUser = null;
             }
+
+        }
+
+        //To update the XML DiaryList
+        public void UpdateDiaryList()
+        {
+            UpdateUserList();
+        }
+        //To update the XML UserList
+        public void UpdateUserList()
+        {
+            Xml<defaultUserList>.Serialize(Cache.getCache().UserList);
 
         }
 
