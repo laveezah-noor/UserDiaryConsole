@@ -58,16 +58,10 @@ namespace UserDiaryConsole
             this.UserName = UserName;
             this.Name = Name;
             this.Password = Password;
-            if (Type == "admin") this.Type = Types.admin.ToString();
-            else if (Type == "user") this.Type = Types.user.ToString();
+            this.Type = Type;
             this.phone = Phone;
             this.email = Email;
-            if (Status == "active") { 
-                this.Status = Statuses.active.ToString();
-                this.userDiaries = new Diary_List(this.Id);
-                Cache.getCache().defaultDiaryList.Add(this.userDiaries);
-            }
-            else if (Status == "pending") this.Status = Statuses.pending.ToString();
+            this.Status = Status;
             this.LogStatus = false;
             
         }
@@ -78,8 +72,7 @@ namespace UserDiaryConsole
             {
                 Console.WriteLine($"{this.Name} Logged In ");
                 this.LogStatus = true;
-               Cache.getCache().UpdateUserList();
-                return true;
+               return true;
             }
             return false;
         }
@@ -87,7 +80,6 @@ namespace UserDiaryConsole
         public void Logout()
         {
             this.LogStatus = false;
-           Cache.getCache().UpdateUserList();
             Console.WriteLine("Logged Out");
         }
 
@@ -122,7 +114,7 @@ namespace UserDiaryConsole
                         Console.WriteLine(Email);
                     }
                 }
-               Cache.getCache().UpdateUserList();
+                Cache.getCache().UpdateUserList();
                 Console.Clear();
                 Console.WriteLine("\nProfile Updated!\n");
                 this.display();
@@ -138,6 +130,7 @@ namespace UserDiaryConsole
             }
         }
         
+
         public void display()
         {
             Console.WriteLine("\n" +
@@ -255,17 +248,55 @@ namespace UserDiaryConsole
 
 
         //To add DiaryList of a specific user inside the default diary list
-        public void CreateDiaryList(Diary_List userDiary)
+        public void CreateDiaryList(User user)
         {
             if (this.Type == Types.admin.ToString())
             {
-                Cache.getCache().defaultDiaryList.Add(userDiary);
+                user.userDiaries = new Diary_List(user.Id);
+                Cache.getCache().defaultDiaryList.Add(user.userDiaries);
+                Cache.getCache().UpdateDiaryList();
+            }
+        }
+
+        public void DeleteDiaryList(User emp, int itemIndex)
+        {
+            if (this.Type == Types.admin.ToString())
+            {
+                Cache.getCache().defaultDiaryList.RemoveAt(itemIndex);
+                emp.userDiaries = null;
+                Cache.getCache().UpdateDiaryList();
+
+            }
+        }
+
+        //Authorizes the user to use Diaries
+        public void AuthorizeUser(int userId)
+        {
+            if (this.Type == Types.admin.ToString())
+            {
+                if (FindUser(userId) is null) { Console.Clear(); Console.WriteLine("User is not available"); }
+                else
+                {
+                    User emp = FindUser(userId);
+
+                    if (this.FindDiaryList(userId) is -1 && emp.Status != "active")
+                    {
+                        emp.UpdateStatus(Statuses.active.ToString());
+                        CreateDiaryList(emp);
+                        Console.Clear();
+                        Console.WriteLine("\nUser Authorized\n");
+                        emp.display();
+                    }
+                    else { Console.Clear(); Console.WriteLine("Given User is already authorized!"); }
+
+                }
+
             }
         }
 
         //To delete the DiaryList of a specific user inside the default diary list
         //Can also add the functionality to unauthorize the user but keep the diaries
-        public void DeleteDiaryList(int user)
+        public void Unauthorize(int user)
         {
             if (this.Type == Types.admin.ToString())
             {
@@ -273,11 +304,8 @@ namespace UserDiaryConsole
                 int itemIndex = FindDiaryList(user);
                 if (itemIndex != -1)
                 {
-                    Cache.getCache().defaultDiaryList.RemoveAt(itemIndex);
-                    DisplayDiaryLists();
                     emp.UpdateStatus(Statuses.pending.ToString());
-                    emp.userDiaries = null;
-                    Cache.getCache().UpdateDiaryList();
+                    DeleteDiaryList(emp, itemIndex);
                     Console.Clear();
 
                     Console.WriteLine("\nUser Unauthorized\n");
@@ -342,20 +370,18 @@ namespace UserDiaryConsole
                 User newUser;
                 if (Type == Types.user.ToString())
                 {
-                newUser = new User(UserName, Name, Password, Types.user.ToString(), Statuses.active.ToString(), "", "");
-                    CreateDiaryList(newUser.userDiaries);
+                    newUser = new User(UserName, Name, Password, Types.user.ToString(), Statuses.active.ToString(), "", "");
+                    CreateDiaryList(newUser);
                     Cache.getCache().UserList.addUser(newUser);
-                    Cache.getCache().UpdateUserList();
                     Console.Clear();
                     newUser.display();
 
                 }
                 else if (Type == Types.admin.ToString())
                 {
-                newUser = new User(UserName, Name, Password, Types.admin.ToString(), Statuses.active.ToString(), "", "");
-                    CreateDiaryList(newUser.userDiaries);
+                    newUser = new User(UserName, Name, Password, Types.admin.ToString(), Statuses.active.ToString(), "", "");
+                    CreateDiaryList(newUser);
                     Cache.getCache().UserList.addUser(newUser);
-                    Cache.getCache().UpdateUserList();
                     Console.Clear();
                     newUser.display();
                 }
@@ -363,39 +389,39 @@ namespace UserDiaryConsole
             }
         }
 
-        public void CreateUser
-            (
-            string UserName,
-            string Name,
-            string Password)
-        {
-            if (this.Type == Types.admin.ToString())
-            {
-                User newUser = new User(UserName, Name, Password, Types.user.ToString(), Statuses.active.ToString(), "", "");
+        //public void CreateUser
+        //    (
+        //    string UserName,
+        //    string Name,
+        //    string Password)
+        //{
+        //    if (this.Type == Types.admin.ToString())
+        //    {
+        //        User newUser = new User(UserName, Name, Password, Types.user.ToString(), Statuses.active.ToString(), "", "");
                 
-                //Cache.defaultEmpList.addUser(newUser);
-                CreateDiaryList(newUser.userDiaries);
-               Cache.getCache().UpdateUserList();
-                Console.Clear();
-                newUser.display();
-            }
-        }
+        //        //Cache.UserList.addUser(newUser);
+        //        CreateDiaryList(newUser.userDiaries);
+        //       Cache.getCache().UpdateUserList();
+        //        Console.Clear();
+        //        newUser.display();
+        //    }
+        //}
 
-        //To  Create the users from the admin portal
-        public void CreateAdmin
-            (
-            string UserName,
-            string Name,
-            string Password)
-        {
-            if (this.Type == Types.admin.ToString())
-            {
-                User newUser = new User(UserName, Name, Password, Types.admin.ToString(), Statuses.active.ToString(), "","");
-                Console.Clear();
-                newUser.display();
-            }
+        ////To  Create the users from the admin portal
+        //public void CreateAdmin
+        //    (
+        //    string UserName,
+        //    string Name,
+        //    string Password)
+        //{
+        //    if (this.Type == Types.admin.ToString())
+        //    {
+        //        User newUser = new User(UserName, Name, Password, Types.admin.ToString(), Statuses.active.ToString(), "","");
+        //        Console.Clear();
+        //        newUser.display();
+        //    }
 
-        }
+        //}
 
         //To Delete users from the admin portal
         public void DeleteUser(int userId)
@@ -404,7 +430,6 @@ namespace UserDiaryConsole
             {
                 if (Cache.getCache().UserList.deleteUser(userId))
                 {
-                   Cache.getCache().UpdateUserList();
                     Console.Clear();
                     Console.WriteLine("User Deleted!");
                 }
@@ -420,7 +445,6 @@ namespace UserDiaryConsole
                 {
                     if (Cache.getCache().UserList.deleteUser(userId))
                     {
-                       Cache.getCache().UpdateUserList();
                         Console.Clear();
                         Console.WriteLine("Admin Removed Successfully!");
 
@@ -455,33 +479,7 @@ namespace UserDiaryConsole
             }
             return null;
         }
-        //Authorizes the user to use Diaries
-        public void AuthorizeUser(int userId)
-        {
-            if (this.Type == Types.admin.ToString())
-            {
-                if (FindUser(userId) is null) { Console.Clear(); Console.WriteLine("User is not available"); }
-                else
-                {
-                    User emp = FindUser(userId);
-
-                    if (this.FindDiaryList(userId) is -1 && emp.Status != "active")
-                    {
-                        emp.userDiaries = new Diary_List(emp.Id);
-                        CreateDiaryList(emp.userDiaries);
-                        emp.UpdateStatus(Statuses.active.ToString());
-                        Cache.getCache().UpdateDiaryList();
-                        Console.Clear();
-                        Console.WriteLine("\nUser Authorized\n");
-                        emp.display();
-                    }
-                    else { Console.Clear(); Console.WriteLine("Given User is already authorized!"); }
-
-                }
-
-            }
-        }
-
+        
         //To Display User List
         public void DisplayUserLists()
         {

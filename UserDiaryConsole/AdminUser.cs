@@ -15,7 +15,8 @@
 //        //[XmlIgnore]
 //        //public List<Diary_List> defaultDiaryList = Cache.defaultDiaryList;
 //        //[XmlIgnore]
-//        //public User_List<AdminUser> defaultAdminList = Cache.defaultAdminList;
+//        //public
+//        <AdminUser> defaultAdminList = Cache.defaultAdminList;
 //        //[XmlIgnore] public User_List<EmployeeUser> defaultEmpList = Cache.defaultEmpList;
 //        //[XmlIgnore] public defaultUserList defaultUserList = Cache.UserList;
 

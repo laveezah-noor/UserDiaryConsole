@@ -8,15 +8,14 @@ namespace UserDiaryConsole
 {
     public class Cache
     {
-        static Cache instance;
+        static Cache? instance;
         public List<string> UsernameList;
         public List<Diary_List> defaultDiaryList;
-        public defaultUserList UserList = new defaultUserList();
+        public defaultUserList UserList;
 
         public List<User> defaultAdminList;
-        public List<User> defaultEmpList = new List<User>();
         
-        public User currentUser;
+        public User? currentUser;
 
         public static Cache getCache()
         {
@@ -29,6 +28,7 @@ namespace UserDiaryConsole
 
         Cache()
         {
+            UserList =  new defaultUserList();
             UsernameList = new List<string>();
             defaultDiaryList = new List<Diary_List>();
 
@@ -36,29 +36,18 @@ namespace UserDiaryConsole
             if (UserList == null)
             {
                 UserList = new defaultUserList();
-                User admin = new User("admin", "Admin", "admin","admin","active", "", "");
-
                 Xml<defaultUserList>.Serialize(UserList);
+                User admin = new User("admin", "Admin", "admin","admin","active", "", "");
+                UserList.addUser(admin);
 
             }
-            defaultEmpList = GetEmpList();
+            //defaultEmpList = GetEmpList();
             defaultAdminList = GetAdminList();
             defaultDiaryList = GetDefaultDiaryList();
             UsernameList = GetUsernameList();
-            //Console.WriteLine(defaultDiaryList is not null);
+            
         }
-        List<User> GetEmpList()
-        {
-            for (int i = 0; i < UserList.UsersList.Count; i++)
-            {
-                var item = UserList.UsersList[i];
-                if (item.Type == Types.user.ToString())
-                {
-                    defaultEmpList.Add(item);
-                }
-            }
-            return defaultEmpList;
-        }
+        
         public List<User> GetAdminList()
         {
             defaultAdminList = new List<User>();
@@ -84,16 +73,9 @@ namespace UserDiaryConsole
                     defaultDiaryList.Add(item.userDiaries);
                 }
             }
-            //for (int i = 0; i < Cache.defaultEmpList.users.Count; i++)
-            //{
-            //    var item = Cache.defaultEmpList.users[i];
-            //    if (item.userDiaries is not null)
-            //    {
-            //        defaultDiaryList.Add(item.userDiaries);
-            //    }
-            //}
             return defaultDiaryList;
         }
+
         public List<string> GetUsernameList()
         {
             for (int i = 0; i < UserList.UsersList.Count; i++)
@@ -104,18 +86,12 @@ namespace UserDiaryConsole
             }
             return UsernameList;
         }
-        // Displays the UserLists
-        public void DisplayUserLists()
-        {
-            //UserList.Admin_UserList.displayUsers();
-            //UserList.Employee_UserList.displayUsers();
-
-        }
+        
 
         // Displays User Diaries with id and count
         public void DisplayDiaryList()
         {
-            Console.WriteLine($"\nDiary List Count: {defaultDiaryList.Count} out of {defaultEmpList.Count} \n");
+            Console.WriteLine($"\nDiary List Count: {defaultDiaryList.Count} out of {UserList.Count} \n");
 
             foreach (var item in Cache.getCache().defaultDiaryList)
             {
@@ -123,7 +99,17 @@ namespace UserDiaryConsole
                 Console.WriteLine($"UserId: {item.user}, UserDiariesCount: {item.diaryCount()}");
             }
         }
+        
+        public void Register(string name, string username, string passcode, string email, string phone)
+        {
+            User emp = new User(username, name, passcode, Types.user.ToString(), Statuses.pending.ToString(), phone, email);
+            UserList.addUser(emp);
+            Console.Clear();
+            emp.display();
 
+            Console.WriteLine($"\nAccount Created!\n");
+
+        }
         // To Login
         public dynamic UserLog(string username, string password)
         {
@@ -136,7 +122,7 @@ namespace UserDiaryConsole
                     if (user.Login(username, password))
                     {
                         currentUser = user;
-
+                        UpdateUserList();
                         return currentUser;
                     }
                     else
@@ -146,38 +132,6 @@ namespace UserDiaryConsole
                         return null;
                     }
                 }
-                //dynamic user = Cache.UserList.Employee_UserList.findUser(username);
-                //if (user is not null)
-                //{
-                //    if (user.Login(username, password))
-                //    {
-                //        currentUser = user;
-
-                //        return currentUser;
-                //    }
-                //    else
-                //    {
-                //        Console.Clear();
-                //        Console.WriteLine("\nIncorrect Credentials\n");
-                //        return false;
-                //    }
-                //    user = currentUser;
-                //}
-                //user = Cache.UserList.Admin_UserList.findUser(username);
-                //if (user is not null)
-                //{
-                //    if (user.Login(username, password))
-                //    {
-                //        currentUser = user;
-                //        return currentUser;
-                //    }
-                //    else
-                //    {
-                //        Console.Clear();
-                //        Console.WriteLine("\nIncorrect Credentials\n");
-                //        return false;
-                //    }
-                //}
                 Console.Clear();
                 Console.WriteLine("\nIncorrect Credentials\n");
 
@@ -185,15 +139,6 @@ namespace UserDiaryConsole
             }
             else Console.WriteLine("Already Logged In");
             return currentUser;
-            //if (UserLogin.getLoggedIn(username, password))
-            //{
-            //    currentUser = UserLogin.currentUser;
-            //    return currentUser;
-            //}
-            //return currentUser;
-            //}
-            //Console.WriteLine("Already Logged In");
-            //    return null;
         }
 
         // To Logout
@@ -202,6 +147,7 @@ namespace UserDiaryConsole
             if (currentUser != null)
             {
                 currentUser.Logout();
+                UpdateUserList();
                 currentUser = null;
             }
 

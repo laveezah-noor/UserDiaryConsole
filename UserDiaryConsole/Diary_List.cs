@@ -15,16 +15,16 @@ namespace UserDiaryConsole
         [XmlAttribute("UserID")]
         public int user;
 
+        public Diary_List() { }
         public Diary_List(int ID)
         {
             this.user = ID;
         }
-        public Diary_List() { }
 
         // To add a new Diary in the list
         public void addDiary(string name, string content)
         {
-            Diary diary = new Diary(diaryId(),name);
+            Diary diary = new(diaryId(),name);
             diary.create(content);
             this.diaries.Add(diary);
             Console.WriteLine("Diary Created");

@@ -17,16 +17,25 @@ namespace UserDiaryConsole
         [XmlElement("User")]
         public List<User> UsersList { get; set; }
 
+        [XmlIgnore]
+        public int Count
+        {
+            get;
+            set;
+        }
+
         public defaultUserList()
         {
             this.UsersList = new List<User>();
+            Count = this.UsersList.Count;
         }
 
         public void addUser(User user)
         {
             this.UsersList.Add(user);
+            Count = this.UsersList.Count;
+            Cache.getCache().UpdateUserList();
             Cache.getCache().UsernameList = Cache.getCache().GetUsernameList();
-
             Cache.getCache().defaultAdminList = Cache.getCache().GetAdminList();
         }
 
@@ -37,7 +46,8 @@ namespace UserDiaryConsole
             if (findUser(userId) != null)
             {
                 this.UsersList.Remove(findUser(userId));
-
+                Count = this.UsersList.Count;
+                Cache.getCache().UpdateUserList();
                 Cache.getCache().UsernameList = Cache.getCache().GetUsernameList();
                 Cache.getCache().defaultAdminList = Cache.getCache().GetAdminList();
                 return true;
@@ -56,11 +66,11 @@ namespace UserDiaryConsole
             }
             return null;
         }
-        public User findUser(string userId)
+        public User findUser(string userName)
         {
             foreach (User user in this.UsersList)
             {
-                if (user.UserName == userId)
+                if (user.UserName == userName)
                 {
                     return user;
                 }

@@ -23,6 +23,7 @@ namespace UserDiaryConsole
             }
             catch (Exception ex)
             {
+                Console.WriteLine("I'm here now");
                 string stException = string.Format("Exception: {0} \n Message: {1}", ex.StackTrace, ex.Message);
                 Console.WriteLine(stException);
             }
@@ -32,7 +33,7 @@ namespace UserDiaryConsole
 
         public static T Deserialize(T Item)
         {
-            T XmlData = default(T);
+            T XmlData = null;
             try
             {
                 XmlSerializer deserializer = new XmlSerializer(Item.GetType());
@@ -47,6 +48,7 @@ namespace UserDiaryConsole
             {
                 string stException = string.Format("Exception: {0} \n Message: {1}", ex.StackTrace, ex.Message);
                 Console.WriteLine(stException);
+                return null;
             }
 
             return XmlData;

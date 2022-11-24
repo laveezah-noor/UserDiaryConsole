@@ -19,7 +19,7 @@ namespace UserDiaryConsole
         {
             cache = Cache.getCache();
 
-            MainInterface();
+            //MainInterface();
         }
         enum MainOptions
         {
@@ -70,7 +70,6 @@ namespace UserDiaryConsole
         void RegisterInterface()
         {
             Console.WriteLine("=========== Register ===========\n");
-            bool temp = true;
             Console.WriteLine("\nTo exit at any point Enter exit");
             do
             {
@@ -100,14 +99,14 @@ namespace UserDiaryConsole
                         "\nEnter Phone Number (03xx-xxxxxxx): ");
                     input = Console.ReadLine();
                     Console.Clear();
-                    if (input == "exit") { Console.Clear(); break; }
+                    if (input == "exit") break;
                     if (!Utility.ValidatePhone(input))
                     {
                         Console.WriteLine("\nIncorrect Phone Format\n");
                     }
                 }
                 while (!Utility.ValidatePhone(input) && !string.IsNullOrEmpty(input));
-                if (input == "exit") { Console.Clear(); break; }
+                if (input == "exit") break;
                 string phone = input;
 
                 Console.Clear();
@@ -121,44 +120,37 @@ namespace UserDiaryConsole
                     {
                         Console.WriteLine("\nIncorrect Email Format\n");
                     }
-                    if (input == "exit") { Console.Clear(); break; }
+                    if (input == "exit") break;
                 }
                 while (!Utility.ValidateEmail(input) && !string.IsNullOrEmpty(input));
 
-                if (input == "exit") { Console.Clear(); break; }
+                if (input == "exit") break;
                 string email = input;
 
-                
-                User emp = new User(username, name, passcode, "user", "pending", phone, email);
-                cache.UserList.addUser(emp);
-                cache.UpdateUserList();
-                Console.Clear();
-                emp.display();
-
-                Console.WriteLine($"\nAccount Created!\n");
+                cache.Register(name, username, passcode, email, phone);
                 Console.WriteLine("Press to Continue!");
                 Console.ReadKey();
                 break;
-            } while (temp);
+            } while (true);
         }
+        
         void LoginInterface()
         {
             Console.WriteLine("=========== Login ===========\n");
             RunUserLogin(user);
         }
 
-        private void RunUserLogin(User user)
+        void RunUserLogin(User user)
         {
             Console.WriteLine("\nTo exit at any point Enter exit");
             do
             {
                 string username = Utility.getInput("Enter your Username: ");
-                if (username == "exit") { Console.Clear(); break; }
+                if (username == "exit")  break;
 
                 string password = Utility.getInput("Enter your Password: ");
                 if (password == "exit")
                 {
-                    Console.Clear();
                     break;
                 }
 
@@ -204,7 +196,7 @@ namespace UserDiaryConsole
                     $"- To Update your Profile Press {((int)UserOptions.Update_Profile)}\n" +
                     $"- To Display your Profile Press {((int)UserOptions.Display)}\n" +
                     $"- To Logout Press {((int)UserOptions.Logout)}\n");
-                string input = Console.ReadLine();
+                var input = Console.ReadLine();
                 int option;
                 while (!Utility.isNumeric(input))
                 {
@@ -287,20 +279,24 @@ namespace UserDiaryConsole
                                 break;
                             }
                         case (int)UserOptions.Display:
-                            UserDisplay(user);
-                            Console.WriteLine("Press to Continue!");
-                            Console.ReadKey();
-                            break;
-                        case (int)UserOptions.Logout:
-                            Console.Clear();
-                            Console.WriteLine("==== Do you really want to logout? ====\n" + "If Yes press y");
-                            string response = Utility.getInput();
-                            if (response == "y")
                             {
-                                cache.Logout();
-                                user = null;
+                                UserDisplay(user);
+                                Console.WriteLine("Press to Continue!");
+                                Console.ReadKey();
+                                break;
                             }
-                            break;
+                        case (int)UserOptions.Logout:
+                            {
+                                Console.Clear();
+                                Console.WriteLine("==== Do you really want to logout? ====\n" + "If Yes press y");
+                                string response = Utility.getInput();
+                                if (response == "y")
+                                {
+                                    cache.Logout();
+                                    user = null;
+                                }
+                                break;
+                            }
                         default:
                             break;
                     }
@@ -362,7 +358,7 @@ namespace UserDiaryConsole
                     $"- To Display your Profile Press {(int)AdminOptions.Display}\n" +
                     $"- To Logout Press {(int)AdminOptions.Logout}\n");
 
-                string input = Console.ReadLine();
+                var input = Console.ReadLine();
                 int option;
                 while (!Utility.isNumeric(input))
                 {
@@ -444,12 +440,22 @@ namespace UserDiaryConsole
                                 Console.Clear();
                                 Console.WriteLine("==== To Create a User ====");
                                 Console.WriteLine("\nTo exit at any point Enter exit\n");
+                                
                                 Console.WriteLine("Enter User Type:");
                                 string type = Utility.getInput().ToLower();
+                                if (type != Types.user.ToString() && type != Types.admin.ToString() && type != "exit")
+                                {
+                                    Console.WriteLine("Incorrect Type!\nPress to Continue!");
+                                    Console.ReadKey();
+                                    break;
+                                }
+                            
                                 if (type == "exit") { Console.Clear(); break; }
+                                
                                 Console.WriteLine("Enter User Name:");
                                 string name = Utility.getInput();
                                 if (name == "exit") { Console.Clear(); break; }
+                                
                                 Console.WriteLine("Enter User Password: ");
                                 string passcode = Utility.getInput();
                                 if (passcode == "exit") { Console.Clear(); break; }
@@ -475,7 +481,7 @@ namespace UserDiaryConsole
                         case (int)AdminOptions.Delete:
                             {
                                 Console.Clear();
-                                if (Cache.getCache().defaultEmpList.Count != 0)
+                                if (Cache.getCache().UserList.Count != 0)
                                 {
                                     string idInput;
                                     do
@@ -520,7 +526,7 @@ namespace UserDiaryConsole
                         case (int)AdminOptions.Find:
                             {
                                 Console.Clear();
-                                if (Cache.getCache().defaultEmpList.Count != 0)
+                                if (Cache.getCache().UserList.Count != 0)
                                 {
 
                                     Console.WriteLine("==== To Find a User ====\n");
@@ -550,7 +556,7 @@ namespace UserDiaryConsole
                         case (int)AdminOptions.Authorize:
                             {
                                 Console.Clear();
-                                if (Cache.getCache().defaultEmpList.Count != 0)
+                                if (Cache.getCache().UserList.Count != 0)
                                 {
                                     string idInput;
                                     do
@@ -595,7 +601,7 @@ namespace UserDiaryConsole
                         case (int)AdminOptions.Unauthorize:
                             {
                                 Console.Clear();
-                                if (Cache.getCache().defaultEmpList.Count != 0)
+                                if (Cache.getCache().UserList.Count != 0)
                                 {
                                     string idInput;
                                     do
@@ -624,7 +630,7 @@ namespace UserDiaryConsole
                                         if (id == 0) { Console.Clear(); break; }
                                         Console.Clear();
 
-                                    user.DeleteDiaryList(id);
+                                    user.Unauthorize(id);
                                     }
 
                                 }
@@ -640,7 +646,7 @@ namespace UserDiaryConsole
                         case (int)AdminOptions.Find_Diary:
                             {
                                 Console.Clear();
-                                if (Cache.getCache().defaultEmpList.Count != 0)
+                                if (Cache.getCache().UserList.Count != 0)
                                 {
                                     string idInput;
                                     do
@@ -686,7 +692,7 @@ namespace UserDiaryConsole
                         case (int)AdminOptions.Display_Users:
                             {
                                 Console.Clear();
-                                if (Cache.getCache().defaultEmpList.Count != 0)
+                                if (Cache.getCache().UserList.Count != 0)
                                 {
                                     Console.WriteLine("==== Users Displayed ====\n");
                                     user.DisplayUserLists();
@@ -722,7 +728,7 @@ namespace UserDiaryConsole
                         case (int)AdminOptions.Display_Diaries:
                             {
                                 Console.Clear();
-                                if (Cache.getCache().defaultEmpList.Count != 0)
+                                if (Cache.getCache().UserList.Count != 0)
                                 {
                                     Console.WriteLine("==== User Diaries Displayed ====");
                                     user.DisplayDiaryLists();
@@ -826,7 +832,7 @@ namespace UserDiaryConsole
                     {
                         int id = Convert.ToInt32(idInput);
 
-                        if (id == 0) { Console.Clear(); return false; }
+                        if (id == 0) { Console.Clear(); Console.WriteLine("\nExited\n"); return false; }
 
                         user.DeleteDiary(id);
                     }
